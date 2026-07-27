@@ -81,6 +81,16 @@ class NavigationManager {
     this.currentView = 'intro';   // 'intro' | 'home' | 'alpha' | 'beta'
     this.history = [];
     this.wipeOverlay = document.getElementById('screen-wipe-overlay');
+    this.checkHash();
+  }
+
+  checkHash() {
+    const hash = window.location.hash.replace('#', '');
+    if (hash === 'alpha' || hash === 'beta' || hash === 'home') {
+      setTimeout(() => {
+        this.navigateTo(hash, { instant: true });
+      }, 100);
+    }
   }
 
   navigateTo(viewId, opts = {}) {
@@ -261,7 +271,6 @@ class OpeningSequenceController {
   }
 
   _onAssemblyComplete() {
-    // Show logo image after particles assembled
     if (this.introLogo) this.introLogo.classList.add('assembled');
 
     // Reveal title

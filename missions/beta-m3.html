@@ -65,7 +65,7 @@
     </a>
     <div class="mission-top-center" id="stage-indicator">MISSION 06 // PROMPT RELAY</div>
     <div class="mission-top-right">
-      <a href="../index.html" class="mission-home-btn">← Home</a>
+      <a href="../index.html#beta" class="mission-home-btn">← Team Beta</a>
     </div>
   </header>
 
@@ -103,11 +103,11 @@
     <button class="btn-mission-secondary" id="s3-next" style="margin-top:1.5rem;">SELECT PROMPT →</button>
   </section>
 
-  <!-- STAGE 4: Prompt Library -->
+  <!-- STAGE 4: Prompt Selection (Secret) -->
   <section class="stage" id="stage-4">
     <p class="mission-label">MISSION PROMPT LIBRARY</p>
-    <h2 class="mission-title-lg" style="margin-bottom:0.5rem;">Choose a Prompt</h2>
-    <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:1.5rem;">Scroll and click to select the starting prompt.</p>
+    <h2 class="mission-title-lg" style="margin-bottom:0.5rem;">Select Starting Prompt (Secret)</h2>
+    <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:1.5rem;">Agent 1: Click a card to view and reveal your secret prompt.</p>
     <div class="prompt-carousel" id="prompt-carousel">
       <!-- Injected by JS -->
     </div>
@@ -132,46 +132,47 @@
     </div>
   </section>
 
-  <!-- STAGE 6: Final Generation -->
+  <!-- STAGE 6: Agent 10 Input -->
   <section class="stage" id="stage-6">
-    <p class="mission-label">FINAL GENERATION</p>
-    <h2 class="mission-title-lg" style="margin-bottom:0.5rem;">Agent 10</h2>
-    <p style="color:var(--text-sub);font-size:1rem;margin-bottom:2rem;">Generate the image using the prompt exactly as you heard it.</p>
-    <div class="glass-mission-card" style="max-width:560px;width:90%;text-align:center;padding:2.5rem;">
-      <div style="font-size:3rem;margin-bottom:1rem;">🎨</div>
-      <p style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:1rem;margin-bottom:1rem;">Open Gemini Canvas and describe your prompt.</p>
-      <p style="color:var(--text-muted);font-size:0.88rem;line-height:1.6;margin-bottom:1.5rem;">Whatever you heard from Agent 9, use those exact words to generate your image.</p>
-      <a href="https://gemini.google.com" target="_blank">
-        <button class="btn-mission-primary" style="width:100%;">🚀 OPEN GEMINI</button>
-      </a>
+    <p class="mission-label">FINAL TRANSMISSION</p>
+    <h2 class="mission-title-lg" style="margin-bottom:0.5rem;">Agent 10 Prompt Input</h2>
+    <p style="color:var(--text-sub);font-size:0.95rem;margin-bottom:1.5rem;">Agent 10: Type the exact prompt you heard from Agent 9 below.</p>
+    <div class="glass-mission-card" style="max-width:620px;width:92%;text-align:left;padding:2rem;">
+      <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:1rem;margin-bottom:0.8rem;">Agent 10 Final Prompt:</div>
+      <textarea id="agent10-prompt-textarea" rows="4" style="width:100%;background:rgba(0,0,0,0.6);border:1px solid var(--neon-purple);color:#fff;border-radius:12px;padding:1rem;font-family:'Plus Jakarta Sans',sans-serif;font-size:1rem;outline:none;line-height:1.6;" placeholder="Type what Agent 10 heard..."></textarea>
     </div>
-    <button class="btn-mission-secondary" id="s6-next" style="margin-top:1.5rem;">GRAND REVEAL →</button>
+    <button class="btn-mission-primary" id="s6-next" style="margin-top:1.5rem;">PROCEED TO COMPARISON & SIMILARITY →</button>
   </section>
 
-  <!-- STAGE 7: Grand Reveal (comparison) -->
+  <!-- STAGE 7: Grand Reveal (comparison & similarity percentage) -->
   <section class="stage" id="stage-7">
     <p class="mission-label" style="color:#F59E0B;">⭐ GRAND REVEAL</p>
-    <h2 class="mission-title-lg" style="margin-bottom:0.5rem;">Compare The Results</h2>
+    <h2 class="mission-title-lg" style="margin-bottom:0.5rem;">Prompt Similarity Analysis</h2>
+
+    <!-- Similarity Score Badge -->
+    <div id="similarity-score-badge" style="display:none;margin:1rem auto 1.5rem;padding:1rem 2rem;border-radius:20px;background:rgba(168,85,247,0.15);border:2px solid var(--neon-purple);max-width:320px;text-align:center;">
+      <div style="font-family:'Fira Code',monospace;font-size:0.8rem;color:var(--text-muted);letter-spacing:0.1em;">SIMILARITY SCORE</div>
+      <div id="similarity-percentage" style="font-family:'Space Grotesk',sans-serif;font-size:3rem;font-weight:900;color:var(--accent-cyan);text-shadow:0 0 20px var(--accent-cyan);">0%</div>
+    </div>
+
     <div class="compare-wrap" style="margin-bottom:1.5rem;">
       <div class="compare-side">
-        <div class="compare-label original">ORIGINAL PROMPT</div>
+        <div class="compare-label original">ORIGINAL PROMPT (AGENT 1)</div>
         <div class="compare-prompt-text" id="original-prompt-display">—</div>
       </div>
       <div class="compare-side">
-        <div class="compare-label generated">AGENT 10 HEARD</div>
-        <div class="compare-prompt-text" id="final-prompt-input" contenteditable="true" spellcheck="false"
-          style="outline:none;border-color:var(--border-glass-bright);cursor:text;"
-          placeholder="Type what Agent 10 said here...">Click to type Agent 10's version…</div>
+        <div class="compare-label generated">RECEIVED PROMPT (AGENT 10)</div>
+        <div class="compare-prompt-text" id="final-prompt-display">—</div>
       </div>
     </div>
     <div class="diff-legend">
-      <div class="diff-legend-item"><div class="diff-dot match"></div><span>Correct</span></div>
-      <div class="diff-legend-item"><div class="diff-dot changed"></div><span>Modified</span></div>
-      <div class="diff-legend-item"><div class="diff-dot missing"></div><span>Missing</span></div>
+      <div class="diff-legend-item"><div class="diff-dot match"></div><span>Matching Words</span></div>
+      <div class="diff-legend-item"><div class="diff-dot changed"></div><span>Modified Words</span></div>
+      <div class="diff-legend-item"><div class="diff-dot missing"></div><span>Missing Words</span></div>
     </div>
-    <button class="btn-mission-primary" id="compare-btn">⚡ COMPARE PROMPTS</button>
-    <div id="diff-result" style="display:none;margin-top:1rem;max-width:700px;width:90%;"></div>
-    <button class="btn-mission-secondary" id="s7-next" style="margin-top:1rem;display:none;">SEE LESSON →</button>
+    <button class="btn-mission-primary" id="compare-btn" style="margin-top:1rem;background:linear-gradient(135deg,var(--neon-purple),var(--accent-cyan));">⚡ CALCULATE SIMILARITY & DIFF</button>
+    <div id="diff-result" style="display:none;margin-top:1.5rem;max-width:750px;width:92%;"></div>
+    <button class="btn-mission-secondary" id="s7-next" style="margin-top:1.5rem;display:none;">VIEW LESSON →</button>
   </section>
 
   <!-- STAGE 8: Learning + Mission Complete -->
@@ -192,7 +193,7 @@
     </div>
     <p style="color:var(--neon-purple);font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.08em;margin-bottom:1.5rem;">MISSION COMPLETE // PROTOCOL BETA COMPLETE</p>
     <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:2rem;">Thank you for participating. See you at the Synapse Launch Event.</p>
-    <a href="../index.html"><button class="btn-mission-primary">RETURN HOME</button></a>
+    <a href="../index.html#beta"><button class="btn-mission-primary">← RETURN TO TEAM BETA</button></a>
   </section>
 
   <!-- Prompt Reveal Modal -->

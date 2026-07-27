@@ -63,9 +63,9 @@
       <img src="../assets/images/synapse_logo.jpg" alt="Synapse">
       <span>THE SYNAPSE SOCIETY</span>
     </a>
-    <div class="mission-top-center" id="q-progress-label">AI VISION CHALLENGE // IMAGE 0 / 15</div>
+    <div class="mission-top-center" id="q-progress-label">AI VISION CHALLENGE // IMAGE 0 / 10</div>
     <div class="mission-top-right">
-      <a href="../index.html" class="mission-home-btn">← Home</a>
+      <a href="../index.html#beta" class="mission-home-btn">← Team Beta</a>
     </div>
   </header>
 
@@ -116,13 +116,12 @@
 
     <!-- Image phase -->
     <div id="image-phase" style="display:none;text-align:center;width:100%;">
-      <div class="question-counter" style="color:var(--accent-cyan);" id="challenge-counter">CHALLENGE 01 / 15</div>
-      <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:1rem;" id="challenge-question">Can you identify this technology?</p>
+      <div class="question-counter" style="color:var(--accent-cyan);" id="challenge-counter">CHALLENGE 01 / 10</div>
+      <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:0.8rem;" id="challenge-question">Can you identify this technology?</p>
 
-      <div class="scanner-frame" style="margin:0 auto;">
-        <div class="scanner-img-wrap" id="scanner-img-wrap" style="border-color:var(--accent-cyan);box-shadow:0 0 30px rgba(0,243,255,0.3);">
-          <div class="vision-img-placeholder" id="vision-img-placeholder">?</div>
-          <img id="vision-img" src="" alt="Challenge" style="display:none;transform:scale(10);transition:transform 2.5s cubic-bezier(0.25,0.46,0.45,0.94);">
+      <div class="scanner-frame" style="margin:0 auto;max-width:380px;width:90%;">
+        <div class="scanner-img-wrap" id="scanner-img-wrap" style="border-color:var(--accent-cyan);box-shadow:0 0 30px rgba(0,243,255,0.3);aspect-ratio:1;position:relative;overflow:hidden;">
+          <div id="vision-render-box" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;transform:scale(8);transition:transform 2.5s cubic-bezier(0.25,0.46,0.45,0.94);background:#0a0e17;"></div>
           <div class="scanner-scan-line"></div>
           <div class="scanner-corner sc-tl"></div>
           <div class="scanner-corner sc-tr"></div>
@@ -135,7 +134,15 @@
         </div>
       </div>
 
-      <div id="ai-feedback-tags" style="margin-top:1rem;"></div>
+      <div id="ai-feedback-tags" style="margin-top:0.8rem;"></div>
+
+      <!-- Interactive Zoom Slider -->
+      <div class="zoom-control-bar" style="max-width:380px;margin:0.8rem auto 0;display:flex;align-items:center;gap:12px;background:rgba(0,243,255,0.08);padding:8px 16px;border-radius:20px;border:1px solid rgba(0,243,255,0.25);">
+        <span style="font-family:'Fira Code',monospace;font-size:0.75rem;color:var(--accent-cyan);font-weight:700;">🔍 ZOOM LEVEL</span>
+        <input type="range" id="zoom-slider" min="100" max="500" value="500" style="flex:1;accent-color:var(--accent-cyan);cursor:pointer;">
+        <span id="zoom-val-label" style="font-family:'Fira Code',monospace;font-size:0.8rem;color:#fff;font-weight:700;min-width:38px;">5.0x</span>
+      </div>
+
       <button class="btn-mission-primary" id="reveal-btn" style="margin-top:1rem;background:linear-gradient(135deg,var(--primary-purple),var(--accent-cyan));box-shadow:0 0 25px rgba(0,243,255,0.3);">REVEAL OBJECT</button>
     </div>
 
@@ -169,7 +176,7 @@
         <div class="obs-bar"><div class="obs-fill" style="width:100%;"></div></div>
       </div>
       <p class="mission-quote" style="margin:1.5rem auto;max-width:480px;">Great engineers don't just build technology. They learn to observe it differently.</p>
-      <a href="../index.html"><button class="btn-mission-secondary" style="margin-top:1.5rem;border-color:rgba(0,243,255,0.4);color:var(--accent-cyan);">RETURN HOME</button></a>
+      <a href="../index.html#beta"><button class="btn-mission-secondary" style="margin-top:1.5rem;border-color:rgba(0,243,255,0.4);color:var(--accent-cyan);">← RETURN TO TEAM BETA</button></a>
     </div>
   </section>
 

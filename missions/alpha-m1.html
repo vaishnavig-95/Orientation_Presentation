@@ -7,336 +7,349 @@
   <link rel="stylesheet" href="../assets/css/main.css">
   <link rel="stylesheet" href="../assets/css/animations.css">
   <link rel="stylesheet" href="../assets/css/missions.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
-    /* ── Group Cards ─────────── */
-    .group-cards-row { display:flex; gap:2rem; align-items:stretch; justify-content:center; max-width:760px; width:90%; }
-    .group-card {
-      flex:1; padding:2.2rem 1.8rem; border-radius:20px; cursor:pointer;
-      background:rgba(20,16,38,0.7); backdrop-filter:blur(20px);
-      border:2px solid transparent; display:flex; flex-direction:column;
-      align-items:center; gap:1rem; transition:all 0.35s ease;
-      position:relative; overflow:hidden;
+    body { background: #090909; overflow-x: hidden; font-family: 'Inter', sans-serif; color: #fff; }
+
+    /* Top Navigation Bar */
+    .mission-header-bar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 2.5rem;
+      background: rgba(9, 9, 9, 0.85); backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
-    .group-card::before {
-      content:''; position:absolute; inset:0; border-radius:20px;
-      background: linear-gradient(135deg,rgba(138,43,226,0.15),transparent);
-      opacity:0; transition:opacity 0.3s;
+    .mh-back {
+      display: flex; align-items: center; gap: 8px;
+      color: var(--text-sub); text-decoration: none;
+      font-family: 'Fira Code', monospace; font-size: 0.82rem;
+      transition: all 0.3s ease;
     }
-    .group-card.even-card { border-color:rgba(168,85,247,0.4); }
-    .group-card.odd-card  { border-color:rgba(0,243,255,0.4); }
-    .group-card:hover     { transform:translateY(-6px); }
-    .group-card:hover::before { opacity:1; }
-    .group-card.even-card:hover { box-shadow:0 20px 50px rgba(168,85,247,0.3); border-color:var(--neon-purple); }
-    .group-card.odd-card:hover  { box-shadow:0 20px 50px rgba(0,243,255,0.25); border-color:var(--accent-cyan); }
-    .group-card.selected.even-card { border-color:var(--neon-purple); box-shadow:0 0 40px rgba(168,85,247,0.5); }
-    .group-card.selected.odd-card  { border-color:var(--accent-cyan);  box-shadow:0 0 40px rgba(0,243,255,0.4); }
-    .group-card-letter { font-family:'Space Grotesk',sans-serif; font-size:3rem; font-weight:800; }
-    .group-card.even-card .group-card-letter { color:var(--neon-purple); text-shadow:0 0 20px var(--neon-purple); }
-    .group-card.odd-card  .group-card-letter { color:var(--accent-cyan);  text-shadow:0 0 20px var(--accent-cyan); }
-    .group-card-title { font-family:'Space Grotesk',sans-serif; font-size:1.2rem; font-weight:700; color:#fff; letter-spacing:0.05em; }
-    .group-card-sub   { font-size:0.85rem; color:var(--text-muted); }
-    /* ── Image Reveal ────────── */
-    .image-reveal-wrap { display:flex; gap:2rem; align-items:stretch; justify-content:center; max-width:900px; width:90%; }
-    .image-panel {
-      flex:1; border-radius:16px; overflow:hidden;
-      border:2px solid var(--border-glass-bright);
-      position:relative; background:#000;
-      box-shadow:0 0 30px rgba(168,85,247,0.3);
+    .mh-back:hover { color: #fff; transform: translateX(-3px); }
+    .mh-brand {
+      font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 700;
+      color: #fff; letter-spacing: 0.1em;
     }
-    .image-panel img { width:100%; height:260px; object-fit:cover; display:block; filter:brightness(0.9); }
-    .image-panel-label {
-      position:absolute; top:10px; left:50%; transform:translateX(-50%);
-      font-family:'Fira Code',monospace; font-size:0.72rem; font-weight:700;
-      letter-spacing:0.15em; padding:4px 14px; border-radius:20px;
+    .mh-badge {
+      font-family: 'Fira Code', monospace; font-size: 0.75rem;
+      color: var(--neon-purple); background: rgba(138,43,226,0.12);
+      border: 1px solid rgba(138,43,226,0.3); padding: 4px 10px; border-radius: 20px;
     }
-    .image-panel.even .image-panel-label { background:rgba(168,85,247,0.8); color:#fff; }
-    .image-panel.odd  .image-panel-label { background:rgba(0,243,255,0.7);   color:#000; }
-    .image-panel.blurred img { filter:blur(30px) brightness(0.3); }
-    /* ── Tips Cards ──────────── */
-    .tips-grid { display:flex; flex-wrap:wrap; gap:1rem; justify-content:center; max-width:780px; width:90%; }
-    .tip-card {
-      flex:0 0 calc(25% - 1rem); min-width:150px;
-      padding:1.2rem 1rem; border-radius:14px; text-align:center;
-      background:rgba(20,16,38,0.7); border:1px solid var(--border-glass);
-      backdrop-filter:blur(16px); transition:all 0.3s ease; cursor:default;
+
+    /* Cinematic Opening Section */
+    #stage-1 {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: #000; z-index: 50; transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 1s ease;
     }
-    .tip-card:hover { border-color:var(--neon-purple); box-shadow:0 0 20px rgba(168,85,247,0.3); transform:translateY(-4px); }
-    .tip-icon { font-size:2rem; margin-bottom:0.5rem; }
-    .tip-label { font-size:0.82rem; font-weight:600; color:var(--text-sub); }
-    /* ── Submission ─────────── */
-    .character-card {
-      width:220px; padding:2rem 1.5rem; border-radius:20px; text-align:center;
-      background:linear-gradient(135deg,rgba(138,43,226,0.3),rgba(0,243,255,0.1));
-      border:2px solid var(--neon-purple); box-shadow:0 0 40px rgba(168,85,247,0.4);
-      animation:cardReveal 1s cubic-bezier(0.16,1,0.3,1) both;
+    #stage-1.fade-up {
+      transform: translateY(-100%); opacity: 0; pointer-events: none;
     }
-    @keyframes cardReveal {
-      from { opacity:0; transform:translateY(30px) scale(0.8); }
-      to   { opacity:1; transform:translateY(0) scale(1); }
+    .opening-logo-container {
+      position: relative; width: 140px; height: 140px; margin-bottom: 1.8rem;
     }
-    .badge-unlock {
-      display:inline-block; padding:6px 16px; border-radius:20px; margin-top:0.5rem;
-      background:rgba(245,158,11,0.2); border:1px solid rgba(245,158,11,0.5);
-      font-family:'Fira Code',monospace; font-size:0.72rem; color:#F59E0B; letter-spacing:0.08em;
+    .opening-logo-img {
+      width: 100%; height: 100%; border-radius: 28px; object-fit: contain;
+      box-shadow: 0 0 50px rgba(138, 43, 226, 0.8), 0 0 100px rgba(138, 43, 226, 0.4);
+      opacity: 0; transform: scale(0.85); animation: logoFadeZoom 3s ease-out forwards;
     }
-    /* ── Mission Timer Ring ─── */
-    .mission-big-timer { position:relative; width:260px; height:260px; margin:0 auto; }
-    .mission-big-timer svg { position:absolute; inset:0; width:100%; height:100%; transform:rotate(-90deg); }
-    .big-timer-track { fill:none; stroke:rgba(255,255,255,0.05); stroke-width:10; }
-    .big-timer-fill  { fill:none; stroke:var(--neon-purple); stroke-width:10; stroke-linecap:round;
-                       filter:drop-shadow(0 0 12px var(--neon-purple)); transition:stroke-dashoffset 1s linear; }
-    .big-timer-center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-    .big-timer-digits { font-family:'Fira Code',monospace; font-size:3rem; font-weight:700; color:#fff; }
-    .big-timer-orbit  {
-      position:absolute; inset:-8px; border-radius:50%;
-      border:2px dashed rgba(168,85,247,0.3);
-      animation:orbitSpin 8s linear infinite;
+    @keyframes logoFadeZoom {
+      0% { opacity: 0; transform: scale(0.85); filter: blur(10px); }
+      50% { opacity: 1; transform: scale(1.05); filter: blur(0px); }
+      100% { opacity: 1; transform: scale(1); filter: blur(0px); }
     }
-    @keyframes orbitSpin { to { transform:rotate(360deg); } }
-    .orbit-particle {
-      position:absolute; width:8px; height:8px; border-radius:50%;
-      background:var(--neon-purple); box-shadow:0 0 8px var(--neon-purple);
-      top:-4px; left:50%; margin-left:-4px;
+
+    /* Glitch Overlay Effect */
+    .glitch-overlay {
+      position: fixed; inset: 0; z-index: 999; pointer-events: none; opacity: 0;
+      background: rgba(138, 43, 226, 0.2);
     }
+    .glitch-overlay.active {
+      animation: glitchFlash 0.4s ease forwards;
+    }
+    @keyframes glitchFlash {
+      0% { opacity: 0; transform: skewX(0deg); }
+      20% { opacity: 0.9; transform: skewX(10deg); background: rgba(0, 243, 255, 0.25); }
+      40% { opacity: 0.2; transform: skewX(-10deg); }
+      60% { opacity: 0.8; transform: skewX(5deg); background: rgba(138, 43, 226, 0.3); }
+      100% { opacity: 0; transform: skewX(0deg); }
+    }
+
+    /* Single Image Box */
+    .single-image-box {
+      position: relative;
+      max-width: 800px; width: 90vw; height: 55vh;
+      border-radius: 20px; overflow: hidden;
+      border: 2px solid rgba(138, 43, 226, 0.4);
+      box-shadow: 0 0 40px rgba(138, 43, 226, 0.25);
+      background: #000; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .single-image-box img { width: 100%; height: 100%; object-fit: contain; display: block; }
   </style>
 </head>
 <body>
-  <canvas id="neural-canvas"></canvas>
-  <div class="ambient-glow top-left"></div>
-  <div class="ambient-glow bottom-right"></div>
-  <div class="grid-overlay"></div>
-  <div class="glitch-fx" id="glitch-fx"></div>
-  <div class="energy-pulse-overlay" id="energy-pulse"></div>
 
-  <!-- Top Bar -->
-  <header class="mission-top-bar">
-    <a href="../index.html" class="mission-top-logo">
-      <img src="../assets/images/synapse_logo.jpg" alt="Synapse">
-      <span>THE SYNAPSE SOCIETY</span>
+  <!-- Glitch Transition Layer -->
+  <div class="glitch-overlay" id="glitch-overlay"></div>
+
+  <!-- Neural Canvas Background -->
+  <div class="canvas-background">
+    <canvas id="hero-canvas"></canvas>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <!-- Top Header Navigation -->
+  <header class="mission-header-bar">
+    <a href="../index.html?team=alpha" class="mh-back">
+      <span>←</span> BACK TO TEAM ALPHA
     </a>
-    <div class="mission-top-center" id="stage-indicator">STAGE 1 / 12</div>
-    <div class="mission-top-right">
-      <a href="../index.html" class="mission-home-btn">← Home</a>
-    </div>
+    <div class="mh-brand">THE SYNAPSE SOCIETY</div>
+    <div class="mh-badge">MISSION 01</div>
   </header>
 
-  <!-- ══════════════════════════ STAGES ══════════════════════════════════ -->
+  <!-- Presenter Control FAB -->
+  <button class="presenter-fab" id="presenter-fab" title="Presenter Control Panel (Press P)">
+    ⚙ PRESENT CONTROL
+  </button>
 
-  <!-- STAGE 1: Opening -->
-  <section class="stage active" id="stage-1">
-    <div class="intro-logo-box float-element" style="margin-bottom:2rem;">
-      <img src="../assets/images/synapse_logo.jpg" alt="Synapse Logo" class="intro-logo-img assembled">
+  <!-- Presenter Control Panel -->
+  <div class="presenter-panel" id="presenter-panel">
+    <div class="presenter-panel-header">
+      <span class="pp-title">⚡ PRESENTER CONTROL PANEL</span>
+      <span class="pp-hint">Keyboard shortcut: P</span>
     </div>
-    <p class="mission-label">THE SYNAPSE SOCIETY</p>
-    <h1 class="mission-title-xl" style="margin-bottom:0.3rem;">ज्ञानस्य सेतु</h1>
-    <p style="color:var(--text-muted);font-size:1rem;margin-bottom:2.5rem;font-style:italic;">The Bridge of Knowledge</p>
-    <button class="btn-mission-primary" id="s1-next">
-      ENTER MISSION
-      <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-    </button>
-  </section>
-
-  <!-- STAGE 2: Mission Intro -->
-  <section class="stage" id="stage-2">
-    <p class="mission-label">TEAM ALPHA // PROTOCOL ACTIVE</p>
-    <h1 class="mission-title-xl">MISSION 01</h1>
-    <h2 style="font-family:'Space Grotesk',sans-serif;font-size:1.6rem;font-weight:600;color:var(--neon-purple);margin-bottom:1rem;">Prompt Engineering Challenge</h2>
-    <p class="mission-subtitle">"Every masterpiece created by AI begins with a single prompt."</p>
-    <button class="btn-mission-primary" id="s2-next">
-      BEGIN MISSION
-      <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-    </button>
-  </section>
-
-  <!-- STAGE 3: Mission Brief (typewriter) -->
-  <section class="stage" id="stage-3">
-    <div class="glass-mission-card" style="max-width:720px;width:90%;text-align:left;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.2rem;">
-        <div style="width:10px;height:10px;border-radius:50%;background:#F43F5E;"></div>
-        <div style="width:10px;height:10px;border-radius:50%;background:#F59E0B;"></div>
-        <div style="width:10px;height:10px;border-radius:50%;background:#10B981;"></div>
-        <span style="font-family:'Fira Code',monospace;font-size:0.75rem;color:var(--text-muted);margin-left:0.5rem;">SYNAPSE_TERMINAL v2.0</span>
+    <div class="presenter-panel-body">
+      <div class="pp-group">
+        <label class="pp-label">Jump to Stage</label>
+        <div class="pp-row">
+          <select id="pp-stage-select" class="pp-select">
+            <option value="1">1: Opening Animation</option>
+            <option value="2">2: Intro Screen</option>
+            <option value="3">3: Mission Brief</option>
+            <option value="4">4: Image Prep</option>
+            <option value="5">5: Countdown</option>
+            <option value="6">6: Image Reveal</option>
+            <option value="7">7: Objective</option>
+            <option value="8">8: Rules</option>
+            <option value="9">9: Tips</option>
+            <option value="10">10: 5-Min Timer</option>
+            <option value="11">11: Closing</option>
+          </select>
+          <button id="pp-jump-btn" class="pp-btn">JUMP</button>
+        </div>
       </div>
-      <div class="typewriter-box" id="brief-text"></div>
+      <div class="pp-group">
+        <label class="pp-label">Timer Controls</label>
+        <div class="pp-row">
+          <button id="pp-timer-start" class="pp-btn pp-btn-green">Start</button>
+          <button id="pp-timer-pause" class="pp-btn pp-btn-yellow">Pause</button>
+          <button id="pp-timer-reset" class="pp-btn pp-btn-red">Reset</button>
+        </div>
+      </div>
+      <div class="pp-group">
+        <label class="pp-label">Quick Actions</label>
+        <div class="pp-row">
+          <button id="pp-restart" class="pp-btn" style="width:100%;">Restart Mission</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGES -->
+
+  <!-- STAGE 1: Opening Animation (Black Screen -> Logo Fade & Glow -> Text -> Slide Up) -->
+  <section class="stage active" id="stage-1">
+    <div class="opening-logo-container">
+      <img src="../assets/images/synapse_logo.jpg" alt="Synapse Logo" class="opening-logo-img">
+    </div>
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:1.6rem;font-weight:700;letter-spacing:0.2em;color:#fff;margin-bottom:0.4rem;">
+      THE SYNAPSE SOCIETY
+    </div>
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:2.2rem;font-weight:800;color:var(--neon-purple);letter-spacing:0.1em;margin-bottom:0.3rem;">
+      ज्ञानस्य सेतु
+    </div>
+    <div style="color:var(--text-sub);font-size:1.1rem;font-style:italic;letter-spacing:0.05em;">
+      The Bridge of Knowledge
+    </div>
+  </section>
+
+  <!-- STAGE 2: Intro Screen -->
+  <section class="stage" id="stage-2">
+    <div style="font-family:'Fira Code',monospace;font-size:0.85rem;color:var(--accent-cyan);letter-spacing:0.2em;margin-bottom:0.8rem;">TEAM ALPHA // MISSION PROTOCOL</div>
+    <h1 class="mission-title-xl" style="font-size:4rem;margin-bottom:0.4rem;">MISSION 01</h1>
+    <h2 style="font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700;color:var(--neon-purple);letter-spacing:0.08em;margin-bottom:1.5rem;">
+      Prompt Engineering Challenge
+    </h2>
+    <p style="font-size:1.25rem;color:var(--text-sub);max-width:680px;line-height:1.6;margin-bottom:2.5rem;font-style:italic;">
+      "Every masterpiece created by AI begins with a single prompt."
+    </p>
+    <button class="btn-mission-primary" id="s2-next" style="padding:16px 40px;font-size:1.1rem;box-shadow:0 0 35px rgba(138,43,226,0.6);">
+      BEGIN MISSION →
+    </button>
+  </section>
+
+  <!-- STAGE 3: Mission Brief -->
+  <section class="stage" id="stage-3">
+    <div class="glass-mission-card" style="max-width:760px;width:92%;padding:2.2rem;text-align:left;">
+      <!-- Terminal Header Bar -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:0.8rem;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:10px;height:10px;border-radius:50%;background:#F43F5E;"></div>
+          <div style="width:10px;height:10px;border-radius:50%;background:#F59E0B;"></div>
+          <div style="width:10px;height:10px;border-radius:50%;background:#10B981;"></div>
+          <span style="font-family:'Fira Code',monospace;font-size:0.78rem;color:var(--text-muted);margin-left:0.5rem;">SYNAPSE_CORE_AI v4.2</span>
+        </div>
+        <div style="font-family:'Fira Code',monospace;font-size:0.75rem;color:var(--accent-cyan);">STATUS: ACTIVE</div>
+      </div>
+
+      <!-- Boot Status Lines -->
+      <div id="boot-status-box" style="font-family:'Fira Code',monospace;font-size:0.9rem;color:var(--accent-cyan);margin-bottom:1rem;line-height:1.6;">
+        SYSTEM BOOTING...<br>
+        <span style="color:#10B981;">[✓] Artificial Intelligence Core Activated</span><br>
+        <span style="color:var(--neon-purple);">[!] MISSION RECEIVED</span>
+      </div>
+
+      <!-- Typewriter Output Box -->
+      <div class="typewriter-box" id="brief-text" style="min-height:180px;font-size:1.05rem;line-height:1.8;color:#fff;"></div>
       <div id="brief-cursor" class="typewriter-cursor" style="display:none;"></div>
     </div>
-    <button class="btn-mission-secondary" id="s3-next" style="margin-top:1.5rem;display:none;">CONTINUE →</button>
+    <button class="btn-mission-secondary" id="s3-next" style="margin-top:1.8rem;display:none;">CONTINUE →</button>
   </section>
 
-  <!-- STAGE 4: Group Selection -->
+  <!-- STAGE 4: Image Preparation -->
   <section class="stage" id="stage-4">
-    <p class="mission-label">AGENT ASSIGNMENT</p>
-    <h2 class="mission-title-lg" style="margin-bottom:0.4rem;">Select Your Group</h2>
-    <p style="color:var(--text-muted);margin-bottom:2rem;font-size:0.9rem;">Choose based on your roll number</p>
-    <div class="group-cards-row">
-      <div class="group-card even-card" id="card-even">
-        <div class="group-card-letter">A</div>
-        <div class="group-card-title">OPTION A</div>
-        <div class="group-card-sub">Even Roll Numbers</div>
-        <div style="font-size:0.8rem;color:var(--neon-purple);font-family:'Fira Code',monospace;margin-top:0.3rem;">PURPLE PROTOCOL</div>
-      </div>
-      <div class="group-card odd-card" id="card-odd">
-        <div class="group-card-letter">B</div>
-        <div class="group-card-title">OPTION B</div>
-        <div class="group-card-sub">Odd Roll Numbers</div>
-        <div style="font-size:0.8rem;color:var(--accent-cyan);font-family:'Fira Code',monospace;margin-top:0.3rem;">CYAN PROTOCOL</div>
-      </div>
-    </div>
-    <button class="btn-mission-secondary" id="s4-next" style="margin-top:2rem;opacity:0.4;pointer-events:none;" disabled>CONFIRM GROUP →</button>
+    <p class="mission-label">PHASE 01 // MEMORIZATION</p>
+    <h2 class="mission-title-lg">Prepare For Visual Memory</h2>
+    <p class="mission-subtitle" style="margin-bottom:2rem;">Two images will be displayed for exactly 10 SECONDS EACH. Focus on details, lighting, colors, and structure.</p>
+    <button class="btn-mission-primary" id="s4-next">READY — START COUNTDOWN</button>
   </section>
 
-  <!-- STAGE 5: Image Preparation -->
+  <!-- STAGE 5: 3-2-1 Countdown -->
   <section class="stage" id="stage-5">
-    <p class="mission-label" style="color:#F59E0B;letter-spacing:0.2em;">⚠ PREPARE YOURSELF</p>
-    <h2 class="mission-title-lg" style="margin-bottom:0.8rem;">Observe Every Detail</h2>
-    <div class="glass-mission-card" style="max-width:480px;padding:1.5rem 2rem;margin-bottom:2rem;">
-      <p style="font-size:1rem;color:var(--text-sub);line-height:1.8;">
-        An image will appear for exactly<br>
-        <span style="color:var(--neon-purple);font-weight:800;font-size:1.5rem;">5 SECONDS</span><br>
-        Memorize every detail. You cannot view it again.
-      </p>
-    </div>
-    <div style="display:flex;gap:1.5rem;align-items:center;justify-content:center;margin-bottom:2rem;">
-      <div id="countdown-3" style="font-family:'Space Grotesk',sans-serif;font-size:5rem;font-weight:800;color:var(--neon-purple);opacity:0;transition:all 0.4s ease;">3</div>
-      <div id="countdown-2" style="font-family:'Space Grotesk',sans-serif;font-size:5rem;font-weight:800;color:var(--neon-purple);opacity:0;transition:all 0.4s ease;">2</div>
-      <div id="countdown-1" style="font-family:'Space Grotesk',sans-serif;font-size:5rem;font-weight:800;color:var(--neon-purple);opacity:0;transition:all 0.4s ease;">1</div>
+    <p class="mission-label" style="color:#F59E0B;">⚠ GET READY</p>
+    <h2 class="mission-title-lg" style="margin-bottom:2rem;">Images Revealing In...</h2>
+    <div style="display:flex;gap:2rem;align-items:center;justify-content:center;margin-bottom:2.5rem;">
+      <div id="countdown-3" style="font-family:'Space Grotesk',sans-serif;font-size:6rem;font-weight:800;color:var(--neon-purple);opacity:0;transition:all 0.4s ease;">3</div>
+      <div id="countdown-2" style="font-family:'Space Grotesk',sans-serif;font-size:6rem;font-weight:800;color:var(--neon-purple);opacity:0;transition:all 0.4s ease;">2</div>
+      <div id="countdown-1" style="font-family:'Space Grotesk',sans-serif;font-size:6rem;font-weight:800;color:var(--neon-purple);opacity:0;transition:all 0.4s ease;">1</div>
     </div>
     <button class="btn-mission-primary" id="s5-start">START COUNTDOWN</button>
   </section>
 
-  <!-- STAGE 6: Image Reveal (5 seconds) -->
+  <!-- STAGE 6: Image Reveal (10s Image 1 -> 10s Image 2) -->
   <section class="stage" id="stage-6">
-    <p class="mission-label" style="color:#F43F5E;letter-spacing:0.2em;">⏱ MEMORIZE NOW</p>
-    <div class="image-reveal-wrap" id="image-reveal-wrap">
-      <div class="image-panel even" id="even-panel">
-        <div class="image-panel-label">EVEN</div>
-        <img id="even-img" src="../assets/images/challenge_01_spiderman.jpg" alt="Even Group Image">
-      </div>
-      <div class="image-panel odd" id="odd-panel">
-        <div class="image-panel-label">ODD</div>
-        <img id="odd-img" src="../assets/images/challenge_02_groot.jpg" alt="Odd Group Image">
-      </div>
+    <p class="mission-label" id="reveal-image-label" style="color:#F43F5E;letter-spacing:0.2em;margin-bottom:1rem;">⏱ MEMORIZE IMAGE 1 / 2</p>
+
+    <!-- Single Full Image Display Box -->
+    <div class="single-image-box">
+      <img id="challenge-img" src="../assets/images/challenge_01_spiderman.jpg" alt="Challenge Image">
     </div>
-    <div class="circular-timer-wrap" style="width:100px;height:100px;margin:1.2rem auto 0;">
-      <svg viewBox="0 0 100 100">
-        <circle class="timer-track" cx="50" cy="50" r="42"/>
-        <circle id="reveal-timer-ring" class="timer-fill" cx="50" cy="50" r="42"
-          style="stroke-dasharray:263.9;stroke-dashoffset:0;"/>
-      </svg>
-      <div class="timer-center">
-        <div id="reveal-countdown" class="timer-digits" style="font-size:1.5rem;">5</div>
+
+    <!-- Timer Ring & Controls -->
+    <div style="display:flex;align-items:center;gap:1.5rem;justify-content:center;">
+      <div class="circular-timer-wrap" style="width:70px;height:70px;">
+        <svg viewBox="0 0 100 100">
+          <circle class="timer-track" cx="50" cy="50" r="42"/>
+          <circle id="reveal-timer-ring" class="timer-fill" cx="50" cy="50" r="42"
+            style="stroke-dasharray:263.9;stroke-dashoffset:0;"/>
+        </svg>
+        <div class="timer-center">
+          <div id="reveal-countdown" class="timer-digits" style="font-size:1.3rem;">10</div>
+        </div>
       </div>
+
+      <button class="btn-mission-primary" id="switch-img-btn" style="padding:12px 24px;font-size:0.9rem;">
+        NEXT IMAGE (GROOT) →
+      </button>
     </div>
   </section>
 
   <!-- STAGE 7: Mission Objective -->
   <section class="stage" id="stage-7">
-    <p class="mission-label">MISSION OBJECTIVE</p>
-    <h2 class="mission-title-lg" style="margin-bottom:1.5rem;">Your Mission</h2>
-    <div style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;max-width:700px;margin-bottom:2rem;">
-      <div class="glass-mission-card" style="flex:0 0 calc(50% - 0.5rem);padding:1.2rem;text-align:left;min-width:260px;">
-        <div style="font-size:1.5rem;margin-bottom:0.5rem;">👁</div>
-        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;margin-bottom:0.3rem;">Observe</div>
-        <div style="font-size:0.85rem;color:var(--text-muted);">Study every element you saw in the image.</div>
-      </div>
-      <div class="glass-mission-card" style="flex:0 0 calc(50% - 0.5rem);padding:1.2rem;text-align:left;min-width:260px;">
-        <div style="font-size:1.5rem;margin-bottom:0.5rem;">🧠</div>
-        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;margin-bottom:0.3rem;">Remember</div>
-        <div style="font-size:0.85rem;color:var(--text-muted);">Lock in lighting, colors, style, and composition.</div>
-      </div>
-      <div class="glass-mission-card" style="flex:0 0 calc(50% - 0.5rem);padding:1.2rem;text-align:left;min-width:260px;">
-        <div style="font-size:1.5rem;margin-bottom:0.5rem;">✍️</div>
-        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;margin-bottom:0.3rem;">Describe</div>
-        <div style="font-size:0.85rem;color:var(--text-muted);">Write a prompt capturing every detail.</div>
-      </div>
-      <div class="glass-mission-card" style="flex:0 0 calc(50% - 0.5rem);padding:1.2rem;text-align:left;min-width:260px;">
-        <div style="font-size:1.5rem;margin-bottom:0.5rem;">🤖</div>
-        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;margin-bottom:0.3rem;">Generate</div>
-        <div style="font-size:0.85rem;color:var(--text-muted);">Use Gemini to recreate the image from your prompt.</div>
-      </div>
+    <p class="mission-label">PHASE 02 // PROMPT RECREATION</p>
+    <h2 class="mission-title-lg" style="margin-bottom:1rem;">Your Objective</h2>
+    <div class="glass-mission-card" style="max-width:650px;width:90%;padding:2rem;text-align:left;line-height:1.8;">
+      <p style="color:var(--text-sub);font-size:1rem;margin-bottom:1rem;">
+        Use your memory to write a detailed, highly descriptive prompt in Gemini that recreates the images as accurately as possible.
+      </p>
+      <p style="color:var(--text-sub);font-size:1rem;">
+        Include art style, subject details, background environment, camera angles, and lighting parameters.
+      </p>
     </div>
-    <p class="mission-quote">The better your prompt, the closer your AI recreation. Think like a Prompt Engineer.</p>
-    <button class="btn-mission-secondary" id="s7-next" style="margin-top:1.8rem;">VIEW RULES →</button>
+    <button class="btn-mission-secondary" id="s7-next" style="margin-top:2rem;">VIEW RULES →</button>
   </section>
 
-  <!-- STAGE 8: Rules -->
+  <!-- STAGE 8: Mission Rules -->
   <section class="stage" id="stage-8">
     <p class="mission-label">MISSION PROTOCOL</p>
-    <h2 class="mission-title-lg" style="margin-bottom:1.5rem;">Rules</h2>
-    <ul class="rules-list" id="rules-list">
-      <li class="rule-item"><span class="rule-icon">✓</span>Individual Challenge — Every agent works alone</li>
-      <li class="rule-item"><span class="rule-icon">✓</span>One Prompt Per Student — Make it count</li>
-      <li class="rule-item"><span class="rule-icon">✓</span>No Discussion — Keep your prompt secret</li>
-      <li class="rule-item"><span class="rule-icon">✓</span>No Image Search — Trust your memory</li>
-      <li class="rule-item"><span class="rule-icon">✓</span>Think Like an AI Engineer</li>
-      <li class="rule-item"><span class="rule-icon">⏱</span>Time Limit: 5 Minutes</li>
+    <h2 class="mission-title-lg" style="margin-bottom:1.5rem;">Challenge Rules</h2>
+    <ul class="rules-list" id="rules-list" style="max-width:550px;margin:0 auto 2rem;">
+      <li class="rule-item"><span class="rule-icon">✓</span>Individual Challenge — Every student writes independently</li>
+      <li class="rule-item"><span class="rule-icon">✓</span>Memory Only — No peak back at reference images</li>
+      <li class="rule-item"><span class="rule-icon">✓</span>5 Minutes — Complete prompt writing before time expires</li>
+      <li class="rule-item"><span class="rule-icon">✓</span>One Prompt Submission — Make your prompt count</li>
     </ul>
-    <button class="btn-mission-secondary" id="s8-next" style="margin-top:1.8rem;">VIEW TIPS →</button>
+    <button class="btn-mission-secondary" id="s8-next">PROMPT TIPS →</button>
   </section>
 
-  <!-- STAGE 9: Tips -->
+  <!-- STAGE 9: Prompt Engineering Formula & Tips -->
   <section class="stage" id="stage-9">
-    <p class="mission-label">ENGINEER'S GUIDE</p>
-    <h2 class="mission-title-lg" style="margin-bottom:1.5rem;">Prompt Engineering Tips</h2>
-    <div class="tips-grid">
-      <div class="tip-card"><div class="tip-icon">🎨</div><div class="tip-label">Colors & Palette</div></div>
-      <div class="tip-card"><div class="tip-icon">💡</div><div class="tip-label">Lighting Style</div></div>
-      <div class="tip-card"><div class="tip-icon">📷</div><div class="tip-label">Camera Angle</div></div>
-      <div class="tip-card"><div class="tip-icon">🌧</div><div class="tip-label">Atmosphere</div></div>
-      <div class="tip-card"><div class="tip-icon">🤖</div><div class="tip-label">Objects & Subjects</div></div>
-      <div class="tip-card"><div class="tip-icon">✨</div><div class="tip-label">Small Details</div></div>
-      <div class="tip-card"><div class="tip-icon">🌅</div><div class="tip-label">Background</div></div>
-      <div class="tip-card"><div class="tip-icon">🎭</div><div class="tip-label">Art Style</div></div>
+    <p class="mission-label">PROMPT ENGINEERING GUIDE</p>
+    <h2 class="mission-title-lg" style="margin-bottom:1.5rem;">Formula for Great Prompts</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;max-width:750px;margin-bottom:2rem;text-align:left;">
+      <div class="glass-mission-card" style="padding:1.2rem;">
+        <div style="font-family:'Fira Code',monospace;font-size:0.75rem;color:var(--neon-purple);margin-bottom:0.3rem;">01 // SUBJECT</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:0.95rem;margin-bottom:0.3rem;">What is in the image?</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);">Character, objects, key focus.</div>
+      </div>
+      <div class="glass-mission-card" style="padding:1.2rem;">
+        <div style="font-family:'Fira Code',monospace;font-size:0.75rem;color:var(--accent-cyan);margin-bottom:0.3rem;">02 // ENVIRONMENT</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:0.95rem;margin-bottom:0.3rem;">Where is it set?</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);">Background, weather, location.</div>
+      </div>
+      <div class="glass-mission-card" style="padding:1.2rem;">
+        <div style="font-family:'Fira Code',monospace;font-size:0.75rem;color:#F59E0B;margin-bottom:0.3rem;">03 // STYLE</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:0.95rem;margin-bottom:0.3rem;">What art style?</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);">Photorealistic, 3D render, anime.</div>
+      </div>
+      <div class="glass-mission-card" style="padding:1.2rem;">
+        <div style="font-family:'Fira Code',monospace;font-size:0.75rem;color:#10B981;margin-bottom:0.3rem;">04 // LIGHTING</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:0.95rem;margin-bottom:0.3rem;">How is it lit?</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);">Cinematic neon, golden hour, moody.</div>
+      </div>
     </div>
-    <button class="btn-mission-primary" id="s9-next" style="margin-top:2rem;">START CHALLENGE →</button>
+    <button class="btn-mission-primary" id="s9-next">START 5-MINUTE TIMER →</button>
   </section>
 
-  <!-- STAGE 10: 5-Minute Timer -->
+  <!-- STAGE 10: 5-Minute Main Timer -->
   <section class="stage" id="stage-10">
-    <p class="mission-label" style="color:#F59E0B;">⚡ CHALLENGE IN PROGRESS</p>
-    <h2 class="mission-title-lg" style="margin-bottom:0.5rem;">5-Minute Challenge</h2>
-    <p style="color:var(--text-muted);margin-bottom:2rem;font-size:0.9rem;">Write your best prompt to recreate the image.</p>
+    <p class="mission-label" style="color:#F59E0B;">⏱ PROMPT WRITING IN PROGRESS</p>
+    <h2 class="mission-title-lg" style="margin-bottom:1rem;">Write Your Prompt Now</h2>
 
-    <div class="mission-big-timer">
-      <svg viewBox="0 0 260 260" id="big-timer-svg">
-        <circle class="big-timer-track" cx="130" cy="130" r="114"/>
+    <div class="big-timer-wrap" style="margin:1rem auto;">
+      <svg viewBox="0 0 260 260">
+        <circle class="timer-track" cx="130" cy="130" r="114"/>
         <circle id="big-timer-fill" class="big-timer-fill" cx="130" cy="130" r="114"
           style="stroke-dasharray:716.3;stroke-dashoffset:0;"/>
       </svg>
-      <div class="big-timer-center">
-        <div id="big-timer-digits" class="big-timer-digits">05:00</div>
-        <div class="timer-label">REMAINING</div>
-      </div>
-      <div class="big-timer-orbit">
-        <div class="orbit-particle"></div>
+      <div class="timer-center">
+        <div id="big-timer-digits" class="timer-digits" style="font-size:2.8rem;">05:00</div>
+        <div class="timer-label" style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">MINUTES REMAINING</div>
       </div>
     </div>
 
-    <div style="display:flex;gap:1rem;margin-top:1.5rem;">
+    <div style="display:flex;gap:1rem;justify-content:center;margin-top:1rem;">
       <button class="btn-mission-primary" id="timer-start-btn">▶ START TIMER</button>
       <button class="btn-mission-secondary" id="timer-pause-btn" style="display:none;">⏸ PAUSE</button>
     </div>
-    <button class="btn-mission-secondary" id="s10-next" style="margin-top:1rem;">TIME'S UP — SUBMIT</button>
+    <button class="btn-mission-secondary" id="s10-next" style="margin-top:1.5rem;">TIME'S UP — SUBMIT →</button>
   </section>
 
-  <!-- STAGE 11: Submission / XP -->
+  <!-- STAGE 11: Closing Debrief -->
   <section class="stage" id="stage-11">
-    <p class="mission-label" style="color:#10B981;">✓ MISSION COMPLETE</p>
-    <h2 class="mission-title-lg" style="margin-bottom:0.5rem;background:linear-gradient(135deg,#fff,#10B981);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
-      Outstanding, Agent!
-    </h2>
-    <div class="character-card" style="margin:1.5rem auto;">
-      <div style="font-size:3rem;margin-bottom:0.5rem;">🏆</div>
-      <div style="font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;color:#fff;margin-bottom:0.5rem;">PROMPT ENGINEER</div>
-      <div class="xp-badge">+100 XP</div>
-      <div class="badge-unlock">🔓 BADGE UNLOCKED</div>
-    </div>
-    <p style="color:var(--text-muted);max-width:450px;font-size:0.9rem;margin-bottom:2rem;">Your prompt has been submitted. The Synapse AI is evaluating your engineering precision.</p>
-    <button class="btn-mission-secondary" id="s11-next">PROCEED TO CLOSING →</button>
-  </section>
-
-  <!-- STAGE 12: Closing -->
-  <section class="stage" id="stage-12">
     <div style="text-align:center;max-width:600px;">
       <div class="intro-logo-box float-element" style="margin:0 auto 2rem;width:90px;height:90px;">
         <img src="../assets/images/synapse_logo.jpg" alt="Synapse Logo" class="intro-logo-img assembled" style="border-radius:18px;">
@@ -346,57 +359,19 @@
       <p style="color:var(--text-sub);font-size:1rem;line-height:1.8;margin-bottom:0.5rem;">You have successfully completed</p>
       <p style="color:var(--neon-purple);font-weight:700;font-size:1.2rem;margin-bottom:1.5rem;">Mission 01 — Prompt Engineering Challenge</p>
       <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.6;margin-bottom:2rem;">Your Prompt Engineering journey has begun. The ability to speak to AI is the greatest skill of the modern engineer.</p>
-      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:2rem;">
         <span style="color:var(--neon-purple);font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:0.1em;">INNOVATE</span>
         <span style="color:var(--text-muted);">•</span>
         <span style="color:var(--accent-cyan);font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:0.1em;">CREATE</span>
         <span style="color:var(--text-muted);">•</span>
         <span style="color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:0.1em;">LEAD</span>
       </div>
-      <a href="../index.html"><button class="btn-mission-secondary" style="margin-top:2rem;">RETURN HOME</button></a>
+      <a href="../index.html?team=alpha" class="btn-mission-primary" style="display:inline-block;text-decoration:none;">RETURN TO TEAM ALPHA →</a>
     </div>
   </section>
 
-  <!-- ══════════════ PRESENTER PANEL ══════════════════════════════════════ -->
-  <button class="presenter-toggle-fab" id="presenter-fab" title="Presenter Panel (P)">⚙</button>
-  <div class="presenter-panel" id="presenter-panel">
-    <h3>⚙ Presenter Panel</h3>
-    <label>Even Group Image</label>
-    <select id="pp-even-img">
-      <option value="../assets/images/challenge_01_spiderman.jpg">01 — Spiderman</option>
-      <option value="../assets/images/challenge_02_groot.jpg">02 — Groot</option>
-      <option value="../assets/images/challenge_03_underwater.jpg">03 — Underwater</option>
-      <option value="../assets/images/challenge_04_wizard.jpg">04 — Wizard</option>
-      <option value="../assets/images/challenge_05_cyber_samurai.png">05 — Cyber Samurai</option>
-      <option value="../assets/images/challenge_06_steampunk_airship.png">06 — Steampunk Airship</option>
-      <option value="../assets/images/challenge_07_alien_flora.png">07 — Alien Flora</option>
-      <option value="../assets/images/challenge_08_astronaut_nebula.png">08 — Astronaut Nebula</option>
-      <option value="../assets/images/challenge_09_ice_dragon.png">09 — Ice Dragon</option>
-      <option value="../assets/images/challenge_10_cyber_cat.png">10 — Cyber Cat</option>
-    </select>
-    <label>Odd Group Image</label>
-    <select id="pp-odd-img">
-      <option value="../assets/images/challenge_02_groot.jpg">02 — Groot</option>
-      <option value="../assets/images/challenge_01_spiderman.jpg">01 — Spiderman</option>
-      <option value="../assets/images/challenge_03_underwater.jpg">03 — Underwater</option>
-      <option value="../assets/images/challenge_04_wizard.jpg">04 — Wizard</option>
-      <option value="../assets/images/challenge_05_cyber_samurai.png">05 — Cyber Samurai</option>
-      <option value="../assets/images/challenge_06_steampunk_airship.png">06 — Steampunk Airship</option>
-      <option value="../assets/images/challenge_07_alien_flora.png">07 — Alien Flora</option>
-      <option value="../assets/images/challenge_08_astronaut_nebula.png">08 — Astronaut Nebula</option>
-      <option value="../assets/images/challenge_09_ice_dragon.png">09 — Ice Dragon</option>
-      <option value="../assets/images/challenge_10_cyber_cat.png">10 — Cyber Cat</option>
-    </select>
-    <button class="presenter-btn" id="pp-apply-images">✓ Apply Images</button>
-    <hr style="border-color:rgba(255,255,255,0.08);margin:1rem 0;">
-    <button class="presenter-btn" id="pp-prev">← Previous Stage</button>
-    <button class="presenter-btn" id="pp-next">Next Stage →</button>
-    <button class="presenter-btn" id="pp-reveal">▶ Start Image Reveal</button>
-    <button class="presenter-btn danger" id="pp-restart">↺ Restart Mission</button>
-  </div>
-
+  <!-- Audio and Mission JS -->
   <script src="../assets/js/sounds.js"></script>
-  <script src="../assets/js/neural-canvas.js"></script>
   <script src="../assets/js/missions/alpha-m1.js"></script>
 </body>
 </html>

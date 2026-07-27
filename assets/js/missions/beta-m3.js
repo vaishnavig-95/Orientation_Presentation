@@ -1,6 +1,6 @@
 /* ==========================================================================
-   BETA MISSION 3 — Prompt Relay
-   Agent chain, prompt carousel, comparison diff engine
+   BETA MISSION 3 — Prompt Relay (v2)
+   Secret prompts, Agent 10 text input, and Similarity % Calculation
    ========================================================================== */
 
 const RELAY_PROMPTS = [
@@ -24,9 +24,9 @@ const BRIEF_LINES = [
   { text: 'By the time the message reaches Agent 10,', delay: 3600 },
   { text: 'it may have changed completely.', delay: 4600, color: '#F43F5E' },
   { text: '', delay: 5300 },
-  { text: 'Agent 10 then generates an AI image from what they heard.', delay: 5500 },
-  { text: 'The results will reveal just how much', delay: 6600 },
-  { text: 'words matter in AI communication.', delay: 7500, color: '#A855F7' },
+  { text: 'Agent 10 then enters what they heard.', delay: 5500 },
+  { text: 'The system will calculate the exact percentage', delay: 6600 },
+  { text: 'of accuracy lost along the chain.', delay: 7500, color: '#A855F7' },
 ];
 
 class BetaMission3 {
@@ -34,8 +34,9 @@ class BetaMission3 {
     this.currentStage   = 1;
     this.totalStages    = 8;
     this.presenterOpen  = false;
-    this.selectedPromptIdx = -1;
-    this.agentAdvanced  = 0;  // 0 = none lit, 10 = all lit
+    this.selectedPromptIdx = 0;
+    this.agentAdvanced  = 0;
+    this.agent10Text    = '';
     this.init();
   }
 
@@ -52,9 +53,6 @@ class BetaMission3 {
     });
   }
 
-  /* ── Stage Nav ─────────────────────────────────────────────────────── */
-  nextStage() { if (this.currentStage < this.totalStages) this.goToStage(this.currentStage + 1); }
-
   goToStage(n) {
     const prev = document.getElementById(`stage-${this.currentStage}`);
     const next = document.getElementById(`stage-${n}`);
@@ -69,17 +67,16 @@ class BetaMission3 {
   onStageEnter(n) {
     if (n === 2) this.runBrief();
     if (n === 3) this.animateRules();
-    if (n === 5) { this.agentAdvanced = 0; this.updateAgentChain(); this.showSelectedPromptOnStage5(); }
-    if (n === 7) this.showOriginalPrompt();
+    if (n === 5) { this.agentAdvanced = 1; this.updateAgentChain(); }
+    if (n === 7) this.setupComparisonStage();
     if (n === 8) { this.triggerGlitch(); window.soundSystem && window.soundSystem.playComplete(); }
   }
 
-  /* ── Brief Typewriter ──────────────────────────────────────────────── */
   runBrief() {
     const box = document.getElementById('brief-text');
     const btn = document.getElementById('s2-next');
     if (!box) return;
-
+    box.innerHTML = '';
     BRIEF_LINES.forEach(({ text, delay, color }) => {
       setTimeout(() => {
         const p = document.createElement('p');
@@ -93,12 +90,10 @@ class BetaMission3 {
         requestAnimationFrame(() => requestAnimationFrame(() => p.style.opacity = '1'));
       }, delay);
     });
-
     const last = BRIEF_LINES[BRIEF_LINES.length - 1].delay + 1200;
     setTimeout(() => { if (btn) btn.style.display = 'block'; }, last);
   }
 
-  /* ── Rules ─────────────────────────────────────────────────────────── */
   animateRules() {
     const items = document.querySelectorAll('#rules-list .rule-item');
     items.forEach((item, i) => {
@@ -107,17 +102,18 @@ class BetaMission3 {
     });
   }
 
-  /* ── Prompt Carousel ───────────────────────────────────────────────── */
   buildPromptCarousel() {
     const container = document.getElementById('prompt-carousel');
     if (!container) return;
+    container.innerHTML = '';
 
     RELAY_PROMPTS.forEach((p, i) => {
       const card = document.createElement('div');
       card.className = 'prompt-card';
       card.innerHTML = `
         <div class="prompt-card-emoji">${p.emoji}</div>
-        <div class="prompt-card-text">${p.text.substring(0, 60)}…</div>
+        <div class="prompt-card-text" style="font-weight:700;color:#fff;">Prompt #${i + 1}</div>
+        <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">(Click to view secret)</div>
       `;
       card.addEventListener('click', () => {
         this.selectedPromptIdx = i;
@@ -130,7 +126,6 @@ class BetaMission3 {
     });
   }
 
-  /* ── Modal ─────────────────────────────────────────────────────────── */
   openModal(idx) {
     const p = RELAY_PROMPTS[idx];
     const modal = document.getElementById('prompt-modal');
@@ -146,7 +141,6 @@ class BetaMission3 {
 
   bindModalButtons() {
     document.getElementById('modal-cancel').addEventListener('click', () => {
-      this.selectedPromptIdx = -1;
       document.querySelectorAll('.prompt-card').forEach(c => c.classList.remove('selected'));
       const btn = document.getElementById('s4-next');
       btn.disabled = true; btn.style.opacity = '0.4'; btn.style.pointerEvents = 'none';
@@ -161,11 +155,10 @@ class BetaMission3 {
     });
   }
 
-  /* ── Agent Chain ───────────────────────────────────────────────────── */
   buildAgentChain() {
     const row = document.getElementById('agent-row');
     if (!row) return;
-
+    row.innerHTML = '';
     for (let i = 1; i <= 10; i++) {
       const wrap = document.createElement('div');
       wrap.className = 'agent-node-wrap';
@@ -173,11 +166,11 @@ class BetaMission3 {
       const node = document.createElement('div');
       node.className = 'agent-node';
       node.id = `agent-${i}`;
-      node.textContent = i === 10 ? '🎨' : `A${i}`;
+      node.textContent = i === 10 ? '📝' : `A${i}`;
 
       const label = document.createElement('div');
       label.className = 'agent-label';
-      label.textContent = i === 10 ? 'Generate' : `Agent ${i}`;
+      label.textContent = i === 10 ? 'Agent 10' : `Agent ${i}`;
 
       wrap.appendChild(node);
       wrap.appendChild(label);
@@ -225,18 +218,13 @@ class BetaMission3 {
     }
   }
 
-  showSelectedPromptOnStage5() {
-    // Agent 1 gets highlighted immediately
-    this.agentAdvanced = 1;
-    this.updateAgentChain();
-  }
+  setupComparisonStage() {
+    const orig = RELAY_PROMPTS[this.selectedPromptIdx].text;
+    const textarea = document.getElementById('agent10-prompt-textarea');
+    this.agent10Text = textarea ? textarea.value.trim() : '';
 
-  /* ── Stage 7: Comparison ───────────────────────────────────────────── */
-  showOriginalPrompt() {
-    if (this.selectedPromptIdx >= 0) {
-      const orig = document.getElementById('original-prompt-display');
-      if (orig) orig.textContent = RELAY_PROMPTS[this.selectedPromptIdx].text;
-    }
+    document.getElementById('original-prompt-display').textContent = orig;
+    document.getElementById('final-prompt-display').textContent = this.agent10Text || '(No prompt entered by Agent 10)';
   }
 
   bindCompare() {
@@ -244,10 +232,16 @@ class BetaMission3 {
     if (!compareBtn) return;
 
     compareBtn.addEventListener('click', () => {
-      if (this.selectedPromptIdx < 0) return;
       const original = RELAY_PROMPTS[this.selectedPromptIdx].text;
-      const finalEl  = document.getElementById('final-prompt-input');
-      const received = finalEl ? finalEl.textContent.trim() : '';
+      const received = this.agent10Text || '';
+
+      // Calculate similarity %
+      const similarity = this.calculateSimilarity(original, received);
+      
+      const badge = document.getElementById('similarity-score-badge');
+      const pctEl = document.getElementById('similarity-percentage');
+      if (badge) badge.style.display = 'block';
+      if (pctEl) pctEl.textContent = `${similarity}%`;
 
       const diffResult = document.getElementById('diff-result');
       if (diffResult) {
@@ -262,10 +256,29 @@ class BetaMission3 {
     });
   }
 
+  calculateSimilarity(str1, str2) {
+    if (!str1 || !str2) return 0;
+    const words1 = str1.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/);
+    const words2 = str2.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/);
+
+    let matches = 0;
+    const used = new Set();
+    words1.forEach(w1 => {
+      const idx = words2.findIndex((w2, i) => w2 === w1 && !used.has(i));
+      if (idx !== -1) {
+        matches++;
+        used.add(idx);
+      }
+    });
+
+    const total = Math.max(words1.length, words2.length);
+    return Math.round((matches / total) * 100);
+  }
+
   generateDiff(original, received) {
     const origWords = original.split(' ');
     const recWords  = received.split(' ');
-    const maxLen = Math.max(origWords.length, recWords.length);
+    const maxLen    = Math.max(origWords.length, recWords.length);
     let origHtml = '';
     let recHtml  = '';
 
@@ -275,7 +288,7 @@ class BetaMission3 {
       const owClean = ow.toLowerCase().replace(/[^a-z]/g, '');
       const rwClean = rw.toLowerCase().replace(/[^a-z]/g, '');
 
-      if (owClean === rwClean) {
+      if (owClean === rwClean && owClean !== '') {
         origHtml += `<span class="diff-word match">${ow} </span>`;
         recHtml  += `<span class="diff-word match">${rw} </span>`;
       } else if (ow && rw) {
@@ -291,18 +304,17 @@ class BetaMission3 {
     return `
       <div style="display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;">
         <div style="flex:1;min-width:260px;">
-          <div style="font-family:'Fira Code',monospace;font-size:0.72rem;color:var(--accent-cyan);margin-bottom:6px;">ORIGINAL</div>
+          <div style="font-family:'Fira Code',monospace;font-size:0.75rem;color:var(--accent-cyan);margin-bottom:6px;">ORIGINAL PROMPT (AGENT 1)</div>
           <div class="compare-prompt-text">${origHtml}</div>
         </div>
         <div style="flex:1;min-width:260px;">
-          <div style="font-family:'Fira Code',monospace;font-size:0.72rem;color:var(--neon-purple);margin-bottom:6px;">RECEIVED</div>
-          <div class="compare-prompt-text">${recHtml}</div>
+          <div style="font-family:'Fira Code',monospace;font-size:0.75rem;color:var(--neon-purple);margin-bottom:6px;">FINAL PROMPT (AGENT 10)</div>
+          <div class="compare-prompt-text">${recHtml || '<span style="color:var(--text-muted);">(Empty)</span>'}</div>
         </div>
       </div>
     `;
   }
 
-  /* ── FX ────────────────────────────────────────────────────────────── */
   triggerGlitch() {
     const el = document.getElementById('glitch-fx');
     if (!el) return;
@@ -319,7 +331,6 @@ class BetaMission3 {
     setTimeout(() => el.classList.remove('pulse-active'), 900);
   }
 
-  /* ── Presenter ─────────────────────────────────────────────────────── */
   togglePresenter() {
     this.presenterOpen = !this.presenterOpen;
     document.getElementById('presenter-panel').classList.toggle('open', this.presenterOpen);
@@ -328,12 +339,11 @@ class BetaMission3 {
   bindPresenter() {
     document.getElementById('presenter-fab').addEventListener('click', () => this.togglePresenter());
     document.getElementById('pp-prev').addEventListener('click', () => { if (this.currentStage > 1) this.goToStage(this.currentStage - 1); });
-    document.getElementById('pp-next').addEventListener('click', () => this.nextStage());
+    document.getElementById('pp-next').addEventListener('click', () => this.goToStage(this.currentStage + 1));
     document.getElementById('pp-advance').addEventListener('click', () => this.advanceAgent());
     document.getElementById('pp-restart').addEventListener('click', () => window.location.reload());
   }
 
-  /* ── Stage Buttons ─────────────────────────────────────────────────── */
   bindButtons() {
     document.getElementById('s1-next').addEventListener('click', () => this.goToStage(2));
     document.getElementById('s2-next').addEventListener('click', () => this.goToStage(3));

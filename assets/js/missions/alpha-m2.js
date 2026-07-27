@@ -1,97 +1,68 @@
 /* ==========================================================================
-   ALPHA MISSION 2 — AI Emoji Decoder
+   ALPHA MISSION 2 — AI Emoji Decoder (v2)
+   10 questions · Pause button · TIME'S UP screen · Back to Team Alpha
    ========================================================================== */
 
 const QUESTIONS = [
   {
-    emojis: ['🧠','⬇️','📚'],
+    emojis: ['🧠','🤖','📊'],
     answer: 'Deep Learning',
-    desc: 'A subset of Machine Learning that uses multi-layer neural networks to learn patterns from massive datasets.',
-    usage: 'Used in: Image recognition, speech assistants, self-driving cars.'
+    desc: 'A subset of Machine Learning that uses multi-layered artificial neural networks to learn patterns directly from massive datasets.',
+    usage: 'Powers: Image recognition, computer vision, language models.'
   },
   {
     emojis: ['🧠','🕸️','⚡'],
     answer: 'Neural Network',
-    desc: 'A computing model inspired by the human brain that enables AI systems to recognize patterns and make predictions.',
-    usage: 'Used in: ChatGPT, recommendation systems, computer vision.'
+    desc: 'A computing model inspired by human brain neurons. Interconnected node layers process input data to learn patterns.',
+    usage: 'Powers: ChatGPT, Gemini, facial recognition, autonomous driving.'
   },
   {
-    emojis: ['👁️','🤖','📷'],
-    answer: 'Computer Vision',
-    desc: 'Allows computers to understand and interpret images and videos just like humans.',
-    usage: 'Used in: Face Unlock, CCTV, autonomous vehicles.'
+    emojis: ['🔥','🧱','🛡️'],
+    answer: 'Firewall',
+    desc: 'A digital security system that monitors and filters incoming and outgoing network traffic based on security policies.',
+    usage: 'Used in: Corporate networks, personal computers, cloud routers.'
   },
   {
-    emojis: ['🐳','📦','⚙️'],
-    answer: 'Docker',
-    desc: 'A platform that packages applications and their dependencies into lightweight containers, ensuring consistent operation across systems.',
-    usage: 'Used in: Software deployment, cloud applications, DevOps.'
-  },
-  {
-    emojis: ['☸️','🐳','☁️'],
-    answer: 'Kubernetes',
-    desc: 'An orchestration platform that automates the deployment, scaling, and management of Docker containers.',
-    usage: 'Used in: Cloud infrastructure and large-scale applications.'
-  },
-  {
-    emojis: ['👨‍💻','♾️','🚀'],
-    answer: 'DevOps',
-    desc: 'A culture and set of practices combining software development and IT operations for faster, more reliable software delivery.',
-    usage: 'Used in: CI/CD pipelines, automation, cloud engineering.'
-  },
-  {
-    emojis: ['🔐','🔑','📄'],
-    answer: 'Encryption',
-    desc: 'The process of converting readable information into coded data so only authorized users can access it.',
-    usage: 'Used in: Online banking, messaging apps, digital payments.'
-  },
-  {
-    emojis: ['🎣','📧','💰'],
-    answer: 'Phishing',
-    desc: 'A cyberattack where attackers trick people into revealing sensitive information through fake emails, websites, or messages.',
-    usage: 'Always verify links before clicking!'
-  },
-  {
-    emojis: ['🌐','📱','⌚','💡'],
-    answer: 'Internet of Things (IoT)',
-    desc: 'A network of physical devices connected to the internet that collect and exchange data.',
-    usage: 'Examples: Smart watches, smart homes, connected cars.'
-  },
-  {
-    emojis: ['🪙','🔐','🌐'],
-    answer: 'Cryptocurrency',
-    desc: 'A digital currency secured using cryptography and typically powered by blockchain technology.',
-    usage: 'Examples: Bitcoin, Ethereum.'
-  },
-  {
-    emojis: ['💼','🤝','🌐'],
-    answer: 'LinkedIn',
-    desc: "The world's largest professional networking platform used to build careers, showcase skills, and connect with recruiters.",
-    usage: 'Used by: Over 900 million professionals worldwide.'
-  },
-  {
-    emojis: ['🎨','🟣','📐'],
-    answer: 'Figma',
-    desc: 'A collaborative UI/UX design platform used to design websites, mobile apps, and prototypes.',
-    usage: 'Used by: Designers, product teams, and developers.'
-  },
-  {
-    emojis: ['💎','💻'],
+    emojis: ['💎','🔴','💻'],
     answer: 'Ruby',
-    desc: 'A simple and developer-friendly programming language known for its elegant syntax.',
-    usage: 'Popular Framework: Ruby on Rails.'
+    desc: 'A dynamic, open-source programming language designed for elegant code readability and developer productivity.',
+    usage: 'Famous framework: Ruby on Rails — powers GitHub & Shopify.'
   },
   {
-    emojis: ['📄','✍️','☁️'],
-    answer: 'Google Docs',
-    desc: 'A cloud-based document editor that allows multiple users to collaborate in real time.',
-    usage: 'Used by: Students, teams, and professionals worldwide.'
+    emojis: ['☁️','💻','⚡'],
+    answer: 'Cloud Computing',
+    desc: 'On-demand availability of computer system resources, especially data storage and processing power, over the Internet.',
+    usage: 'Examples: Google Cloud, AWS, Microsoft Azure.'
   },
   {
-    emojis: ['🐙','📂','💻'],
-    answer: 'GitHub',
-    desc: 'A platform for hosting and collaborating on code using Git version control.',
-    usage: 'Essential for: Developers working on projects together.'
+    emojis: ['♾️','💻','🚀'],
+    answer: 'DevOps',
+    desc: 'A set of practices that combines software development (Dev) and IT operations (Ops) to shorten the development lifecycle.',
+    usage: 'Used in: CI/CD automation, continuous deployment, microservices.'
+  },
+  {
+    emojis: ['🔐','🔑','📜'],
+    answer: 'Encryption',
+    desc: 'The process of encoding information so that only authorized parties possessing the decryption key can read it.',
+    usage: 'Protects: Banking apps, HTTPS web traffic, encrypted messages.'
+  },
+  {
+    emojis: ['🎣','📧','💳'],
+    answer: 'Phishing',
+    desc: 'A cyber crime in which targets are contacted by email or message by someone posing as a legitimate institution to lure individuals into providing sensitive data.',
+    usage: 'Always check: Sender addresses, domain names, and suspicious links.'
+  },
+  {
+    emojis: ['🌐','⌚','📱'],
+    answer: 'Internet of Things (IoT)',
+    desc: 'Physical objects embedded with sensors, processing ability, and software that connect and exchange data with other devices over the internet.',
+    usage: 'Examples: Smart watches, connected vehicles, smart home sensors.'
+  },
+  {
+    emojis: ['🔗','🧊','🪙'],
+    answer: 'Blockchain',
+    desc: 'A shared, immutable ledger that facilitates the process of recording transactions and tracking assets in a network.',
+    usage: 'Powers: Bitcoin, Ethereum, decentralized apps (dApps).'
   }
 ];
 
@@ -105,13 +76,13 @@ const STORY_LINES = [
 
 class AlphaMission2 {
   constructor() {
-    this.currentStage = 1;
-    this.currentQ = 0;
+    this.currentStage  = 1;
+    this.currentQ      = 0;
     this.questionTimer = null;
-    this.questionSeconds = 15;
-    this.emojiRevealIndex = 0;
+    this.questionPaused = false;
+    this.questionSeconds = 20;
     this.presenterOpen = false;
-    this.phase = 'signal'; // 'signal' | 'emoji' | 'answer'
+    this.phase = 'signal'; // 'signal' | 'emoji' | 'timesup' | 'answer'
     this.init();
   }
 
@@ -126,30 +97,24 @@ class AlphaMission2 {
 
   /* ── Opening Sequence ──────────────────────────────────────────────── */
   startOpeningSequence() {
-    // Show warning after 2.5s
     setTimeout(() => {
       this.triggerGlitch();
       const wb = document.getElementById('warning-box');
       if (wb) wb.style.display = 'block';
     }, 2500);
 
-    // Show protocol text after 4s
     setTimeout(() => {
       this.triggerGlitch();
       const pb = document.getElementById('protocol-box');
       const pt = document.getElementById('protocol-text');
       if (pb) pb.style.display = 'block';
       if (pt) {
-        const lines = ['AI Core Unable To Communicate...', '', 'Switching To Emoji Protocol...'];
-        lines.forEach((line, i) => {
-          setTimeout(() => {
-            pt.innerHTML += (line ? line : '&nbsp;') + '<br>';
-          }, i * 800);
+        ['AI Core Unable To Communicate...', '', 'Switching To Emoji Protocol...'].forEach((line, i) => {
+          setTimeout(() => { pt.innerHTML += (line ? line : '&nbsp;') + '<br>'; }, i * 800);
         });
       }
     }, 4500);
 
-    // Show mission reveal after 7.5s
     setTimeout(() => {
       this.triggerGlitch();
       const mr = document.getElementById('mission02-reveal');
@@ -157,7 +122,7 @@ class AlphaMission2 {
     }, 7500);
   }
 
-  /* ── Stage Nav ─────────────────────────────────────────────────────── */
+  /* ── Stage Navigation ──────────────────────────────────────────────── */
   goToStage(n) {
     const prev = document.getElementById(`stage-${this.currentStage}`);
     const next = document.getElementById(`stage-${n}`);
@@ -171,12 +136,11 @@ class AlphaMission2 {
     window.soundSystem && window.soundSystem.playClick();
   }
 
-  /* ── Story Typewriter ──────────────────────────────────────────────── */
+  /* ── Story ─────────────────────────────────────────────────────────── */
   runStory() {
     const box = document.getElementById('story-text');
     const btn = document.getElementById('s2-next');
     if (!box) return;
-
     STORY_LINES.forEach(({ text, delay, color }) => {
       setTimeout(() => {
         const p = document.createElement('p');
@@ -188,12 +152,11 @@ class AlphaMission2 {
         requestAnimationFrame(() => requestAnimationFrame(() => p.style.opacity = '1'));
       }, delay);
     });
-
     const lastDelay = STORY_LINES[STORY_LINES.length - 1].delay + 1200;
     setTimeout(() => { if (btn) btn.style.display = 'block'; }, lastDelay);
   }
 
-  /* ── Rules Animation ───────────────────────────────────────────────── */
+  /* ── Rules ─────────────────────────────────────────────────────────── */
   animateRules() {
     const items = document.querySelectorAll('#obj-rules-list .rule-item');
     items.forEach((item, i) => {
@@ -206,6 +169,7 @@ class AlphaMission2 {
   loadQuestion(idx) {
     if (idx >= QUESTIONS.length) { this.goToStage(5); return; }
     this.currentQ = idx;
+    this.questionPaused = false;
     this.phase = 'signal';
     this.showSignalPhase(idx);
   }
@@ -214,15 +178,15 @@ class AlphaMission2 {
     document.getElementById('signal-phase').style.display = '';
     document.getElementById('emoji-phase').style.display = 'none';
     document.getElementById('answer-phase').style.display = 'none';
+    document.getElementById('timesup-phase').style.display = 'none';
 
-    const fill = document.getElementById('signal-fill');
+    const fill   = document.getElementById('signal-fill');
     const status = document.getElementById('signal-status');
     const statusTexts = ['Establishing connection...', 'Scanning neural pathways...', 'Signal locked!', 'Incoming Transmission...'];
-
     let pct = 0;
     const step = setInterval(() => {
       pct += Math.random() * 12 + 4;
-      if (fill) fill.style.width = Math.min(pct, 100) + '%';
+      if (fill)   fill.style.width = Math.min(pct, 100) + '%';
       const si = Math.floor((Math.min(pct, 100) / 100) * (statusTexts.length - 1));
       if (status) status.textContent = statusTexts[si];
       if (pct >= 100) {
@@ -237,11 +201,19 @@ class AlphaMission2 {
     document.getElementById('signal-phase').style.display = 'none';
     document.getElementById('emoji-phase').style.display = '';
     document.getElementById('answer-phase').style.display = 'none';
+    document.getElementById('timesup-phase').style.display = 'none';
 
-    // Counter
+    this.phase = 'emoji';
     document.getElementById('q-counter').textContent = `TRANSMISSION ${String(idx + 1).padStart(2,'0')} / ${QUESTIONS.length}`;
 
-    // Clear emojis
+    // Reset pause button
+    const pauseBtn = document.getElementById('pause-btn');
+    if (pauseBtn) {
+      pauseBtn.textContent = '⏸ PAUSE';
+      pauseBtn.style.opacity = '1';
+    }
+
+    // Emit emojis one by one
     const row = document.getElementById('emoji-row');
     row.innerHTML = '';
     q.emojis.forEach(emoji => {
@@ -250,8 +222,6 @@ class AlphaMission2 {
       span.textContent = emoji;
       row.appendChild(span);
     });
-
-    // Reveal emojis one by one
     const tokens = row.querySelectorAll('.emoji-token');
     tokens.forEach((t, i) => {
       setTimeout(() => {
@@ -260,41 +230,58 @@ class AlphaMission2 {
       }, i * 500 + 200);
     });
 
-    // Start countdown
     const totalDelay = (q.emojis.length - 1) * 500 + 700;
     setTimeout(() => this.startQuestionTimer(), totalDelay);
-
     window.soundSystem && window.soundSystem.playBoot();
   }
 
   startQuestionTimer() {
     const perimeter = 2 * Math.PI * 96;
-    let seconds = 15;
-    const ring = document.getElementById('q-timer-ring');
+    this.questionSeconds = 20;
+    const ring   = document.getElementById('q-timer-ring');
     const digits = document.getElementById('q-timer-digits');
     clearInterval(this.questionTimer);
+    this.questionPaused = false;
 
     this.questionTimer = setInterval(() => {
-      if (ring) ring.style.strokeDashoffset = (perimeter * (1 - seconds / 15)).toString();
-      if (digits) digits.textContent = seconds;
-      if (seconds <= 5 && ring) ring.style.stroke = '#F43F5E';
+      if (this.questionPaused) return;
+      if (ring)   ring.style.strokeDashoffset = (perimeter * (1 - this.questionSeconds / 20)).toString();
+      if (digits) digits.textContent = this.questionSeconds;
+      if (this.questionSeconds <= 5 && ring) ring.style.stroke = '#F43F5E';
       else if (ring) ring.style.stroke = 'var(--neon-purple)';
-      seconds--;
-      if (seconds < 0) {
+      this.questionSeconds--;
+      if (this.questionSeconds < 0) {
         clearInterval(this.questionTimer);
-        // Auto reveal on timeout
-        this.revealAnswer();
+        this.showTimesUp();
       }
     }, 1000);
+  }
+
+  togglePause() {
+    this.questionPaused = !this.questionPaused;
+    const btn = document.getElementById('pause-btn');
+    if (btn) btn.textContent = this.questionPaused ? '▶ RESUME' : '⏸ PAUSE';
+    window.soundSystem && window.soundSystem.playHover();
+  }
+
+  showTimesUp() {
+    clearInterval(this.questionTimer);
+    this.phase = 'timesup';
+    document.getElementById('signal-phase').style.display = 'none';
+    document.getElementById('emoji-phase').style.display = 'none';
+    document.getElementById('answer-phase').style.display = 'none';
+    document.getElementById('timesup-phase').style.display = '';
+    this.triggerGlitch();
+    window.soundSystem && window.soundSystem.playClick();
   }
 
   revealAnswer() {
     clearInterval(this.questionTimer);
     const q = QUESTIONS[this.currentQ];
     this.phase = 'answer';
-
     document.getElementById('signal-phase').style.display = 'none';
     document.getElementById('emoji-phase').style.display = 'none';
+    document.getElementById('timesup-phase').style.display = 'none';
     document.getElementById('answer-phase').style.display = '';
 
     document.getElementById('answer-name').textContent = q.answer;
@@ -302,18 +289,16 @@ class AlphaMission2 {
     document.getElementById('answer-desc').textContent = q.desc;
     document.getElementById('answer-usage').textContent = q.usage;
 
-    // Energy pulse
     const pulse = document.getElementById('energy-pulse');
     if (pulse) {
       pulse.classList.remove('pulse-active');
       void pulse.offsetWidth;
       pulse.classList.add('pulse-active');
     }
-
     window.soundSystem && window.soundSystem.playComplete();
   }
 
-  /* ── Helpers ───────────────────────────────────────────────────────── */
+  /* ── FX ────────────────────────────────────────────────────────────── */
   triggerGlitch() {
     const el = document.getElementById('glitch-fx');
     if (!el) return;
@@ -346,6 +331,8 @@ class AlphaMission2 {
     document.getElementById('s3-next').addEventListener('click', () => this.goToStage(4));
 
     document.getElementById('reveal-btn').addEventListener('click', () => this.revealAnswer());
+    document.getElementById('pause-btn').addEventListener('click', () => this.togglePause());
+    document.getElementById('timesup-reveal-btn').addEventListener('click', () => this.revealAnswer());
     document.getElementById('next-q-btn').addEventListener('click', () => {
       this.loadQuestion(this.currentQ + 1);
       window.soundSystem && window.soundSystem.playClick();

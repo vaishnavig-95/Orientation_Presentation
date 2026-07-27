@@ -36,7 +36,7 @@
     </a>
     <div class="mission-top-center" id="stage-indicator">MISSION 02 // AI EMOJI DECODER</div>
     <div class="mission-top-right">
-      <a href="../index.html" class="mission-home-btn">← Home</a>
+      <a href="../index.html#alpha" class="mission-home-btn">← Team Alpha</a>
     </div>
   </header>
 
@@ -110,7 +110,18 @@
         </div>
       </div>
 
-      <button class="btn-mission-primary" id="reveal-btn" style="margin-top:0.5rem;">REVEAL ANSWER</button>
+      <div style="display:flex;gap:1rem;justify-content:center;align-items:center;margin-top:0.5rem;">
+        <button class="btn-mission-secondary" id="pause-btn" style="padding:10px 20px;">⏸ PAUSE</button>
+        <button class="btn-mission-primary" id="reveal-btn">REVEAL ANSWER</button>
+      </div>
+    </div>
+
+    <!-- Time's Up Phase -->
+    <div id="timesup-phase" style="display:none;text-align:center;width:100%;">
+      <p class="mission-label" style="color:#F43F5E;font-size:1.2rem;letter-spacing:0.2em;">⏱ TIME'S UP!</p>
+      <h2 class="mission-title-lg" style="color:#F43F5E;margin-bottom:1rem;">Transmission Timed Out</h2>
+      <p style="color:var(--text-sub);margin-bottom:2rem;">The 20-second decoding window has expired.</p>
+      <button class="btn-mission-primary" id="timesup-reveal-btn" style="background:linear-gradient(135deg,#F43F5E,var(--neon-purple));">SEE ANSWER →</button>
     </div>
 
     <!-- Answer Phase -->
@@ -141,7 +152,7 @@
       <img src="../assets/images/synapse_logo.jpg" class="intro-logo-img assembled" alt="Synapse" style="border-radius:16px;">
     </div>
     <p style="color:var(--neon-purple);font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:0.08em;margin-bottom:1.5rem;">Think Faster. Decode Smarter. Build the Future.</p>
-    <a href="../index.html"><button class="btn-mission-secondary">RETURN HOME</button></a>
+    <a href="../index.html#alpha"><button class="btn-mission-secondary">← RETURN TO TEAM ALPHA</button></a>
   </section>
 
   <!-- Presenter FAB -->
