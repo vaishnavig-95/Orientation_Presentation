@@ -1,0 +1,250 @@
+/* ==========================================================================
+   THE SYNAPSE SOCIETY - ANIMATION FX & CINEMATIC TRANSITIONS
+   ========================================================================== */
+
+/* Particle Dissolve Screen Wipe */
+.screen-wipe-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at center, #1a0a2e 0%, #090909 100%);
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transform: scaleY(0);
+  transform-origin: top center;
+  transition: none;
+}
+
+.screen-wipe-overlay.wipe-in {
+  animation: wipeIn 0.55s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+}
+
+.screen-wipe-overlay.wipe-out {
+  animation: wipeOut 0.55s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+}
+
+@keyframes wipeIn {
+  0%   { opacity: 1; transform: scaleY(0); transform-origin: top center; }
+  100% { opacity: 1; transform: scaleY(1); transform-origin: top center; }
+}
+
+@keyframes wipeOut {
+  0%   { opacity: 1; transform: scaleY(1); transform-origin: bottom center; }
+  100% { opacity: 0; transform: scaleY(0); transform-origin: bottom center; }
+}
+
+/* Glitch Flash Transition */
+#glitch-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  z-index: 9998;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+#glitch-overlay.active {
+  animation: glitchBurst 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes glitchBurst {
+  0%   { opacity: 0; filter: none; }
+  12%  { opacity: 1; filter: invert(1) hue-rotate(90deg); transform: skewX(8deg) scale(1.03); }
+  28%  { opacity: 0.7; filter: contrast(300%) brightness(160%); transform: skewX(-10deg) translateY(-8px); }
+  50%  { opacity: 0.9; filter: hue-rotate(270deg); transform: skewX(4deg) translateX(12px); }
+  72%  { opacity: 0.6; filter: none; transform: skewX(-2deg); }
+  100% { opacity: 0; filter: none; transform: none; }
+}
+
+/* Section Entry Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scaleReveal {
+  from { opacity: 0; transform: scale(0.88); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideLeft {
+  from { opacity: 0; transform: translateX(30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(-30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.anim-fade-up        { animation: fadeUp 0.6s var(--ease-out-expo) both; }
+.anim-fade-up-delay  { animation: fadeUp 0.6s var(--ease-out-expo) 0.15s both; }
+.anim-fade-up-delay2 { animation: fadeUp 0.6s var(--ease-out-expo) 0.3s both; }
+.anim-fade-in        { animation: fadeIn 0.6s ease both; }
+.anim-scale-reveal   { animation: scaleReveal 0.6s var(--ease-out-expo) both; }
+.anim-slide-left     { animation: slideLeft 0.6s var(--ease-out-expo) both; }
+.anim-slide-right    { animation: slideRight 0.6s var(--ease-out-expo) both; }
+
+/* Float Micro-animation */
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+
+.float-element { animation: floatSlow 5s ease-in-out infinite; }
+.float-element-delayed { animation: floatSlow 6.5s ease-in-out 1.5s infinite; }
+
+/* Shimmer Hover Sweep */
+.shimmer-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -80%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.06) 50%,
+    rgba(255,255,255,0) 100%
+  );
+  transform: skewX(-20deg);
+  transition: left 0.65s var(--ease-out-expo);
+  pointer-events: none;
+}
+
+.shimmer-card:hover::after {
+  left: 140%;
+}
+
+/* Glow Pulse on Interactive Elements */
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 10px var(--deep-purple-glow); }
+  50%       { box-shadow: 0 0 24px var(--neon-purple), 0 0 50px var(--deep-purple-glow); }
+}
+
+.glow-pulse { animation: glowPulse 2.5s ease-in-out infinite; }
+
+/* Neural Network Path Connector */
+@keyframes dashFlow {
+  to { stroke-dashoffset: -40; }
+}
+
+@keyframes dashFlowCyan {
+  to { stroke-dashoffset: -40; }
+}
+
+.path-node-alpha {
+  stroke: var(--neon-purple);
+  stroke-width: 2.5;
+  stroke-dasharray: 10 6;
+  animation: dashFlow 1.4s linear infinite;
+  opacity: 0.65;
+}
+
+.path-node-beta {
+  stroke: var(--accent-cyan);
+  stroke-width: 2.5;
+  stroke-dasharray: 10 6;
+  animation: dashFlowCyan 1.4s linear infinite;
+  opacity: 0.65;
+}
+
+/* Scanline Effect on Protocol Cards */
+.scanline-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.scanline-card::after {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 80%;
+  background: linear-gradient(
+    180deg,
+    rgba(168, 85, 247, 0) 0%,
+    rgba(168, 85, 247, 0.06) 50%,
+    rgba(168, 85, 247, 0) 100%
+  );
+  animation: scanlineSweep 5s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes scanlineSweep {
+  0%   { top: -80%; }
+  100% { top: 200%; }
+}
+
+/* Winner / Complete Burst Ring */
+@keyframes burstRing {
+  0%   { transform: translate(-50%, -50%) scale(0.5); opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+}
+
+.energy-burst-ring {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  border: 2px solid var(--neon-purple);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 500;
+}
+
+.energy-burst-ring.active {
+  animation: burstRing 0.8s var(--ease-out-expo) forwards;
+}
+
+/* Beta Card Scanline (Cyan) */
+.scanline-card.beta-scan::after {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 243, 255, 0) 0%,
+    rgba(0, 243, 255, 0.06) 50%,
+    rgba(0, 243, 255, 0) 100%
+  );
+}
+
+/* Typewriter Cursor */
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--accent-cyan);
+  margin-left: 2px;
+  vertical-align: middle;
+  animation: cursorBlink 0.8s step-end infinite;
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* Staggered card reveal for mission cards */
+.mission-card:nth-child(1) { animation-delay: 0.05s; }
+.mission-card:nth-child(2) { animation-delay: 0.18s; }
+.mission-card:nth-child(3) { animation-delay: 0.31s; }

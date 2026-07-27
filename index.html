@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Synapse Society | AI Training Simulator</title>
+  <meta name="description" content="Synapse AI Training Simulator — Freshers' Orientation Experience by The Synapse Society. Team Alpha & Team Beta mission protocols.">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/animations.css">
+</head>
+<body>
+
+  <!-- ── Background Canvas ─────────────────────────────────────────────── -->
+  <canvas id="neural-canvas"></canvas>
+
+  <!-- ── Ambient Glow Layers ───────────────────────────────────────────── -->
+  <div class="ambient-glow top-left"></div>
+  <div class="ambient-glow bottom-right"></div>
+  <div class="ambient-glow center-burst"></div>
+
+  <!-- ── Grid Overlay ──────────────────────────────────────────────────── -->
+  <div class="grid-overlay"></div>
+
+  <!-- ── Cinematic Overlays ────────────────────────────────────────────── -->
+  <div id="screen-wipe-overlay" class="screen-wipe-overlay"></div>
+  <div id="glitch-overlay"></div>
+  <div id="winner-shockwave" class="energy-burst-ring"></div>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       TOP NAVIGATION HEADER
+  ═════════════════════════════════════════════════════════════════════════ -->
+  <header id="top-header" class="top-header hidden">
+    <div class="brand-container" title="Return to Home">
+      <img src="assets/images/synapse_logo.jpg" alt="The Synapse Society" class="brand-logo">
+      <div class="brand-title-group">
+        <span class="brand-name">THE SYNAPSE SOCIETY</span>
+        <span class="brand-subtitle">AI Training Simulator</span>
+      </div>
+    </div>
+
+    <nav class="nav-links">
+      <button class="nav-item" data-view="home">Home</button>
+      <button class="nav-item" data-view="alpha">Team Alpha</button>
+      <button class="nav-item" data-view="beta">Team Beta</button>
+    </nav>
+
+    <div class="nav-actions">
+      <button id="back-btn" class="nav-item" title="Go Back" style="display:none;">
+        ← Back
+      </button>
+      <button id="sound-toggle-btn" class="icon-btn" title="Toggle Sound">
+        <svg fill="none" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728
+               M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707
+               C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+        </svg>
+      </button>
+      <button id="fullscreen-btn" class="icon-btn" title="Toggle Fullscreen (F)">
+        <svg fill="none" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       SCREEN 1: INTRO / OPENING SEQUENCE
+  ═════════════════════════════════════════════════════════════════════════ -->
+  <section id="intro-screen" class="section-view active">
+    <div class="intro-content">
+
+      <!-- Logo (fades in after particle assembly) -->
+      <div class="intro-logo-box float-element">
+        <img id="intro-logo-img" src="assets/images/synapse_logo.jpg"
+             alt="The Synapse Society Logo" class="intro-logo-img">
+      </div>
+
+      <!-- Title -->
+      <h1 id="intro-main-title" class="intro-main-title">THE SYNAPSE SOCIETY</h1>
+
+      <!-- Subtitle -->
+      <p id="intro-subtitle" class="intro-subtitle">Freshers' Orientation Experience</p>
+
+      <!-- Boot Progress Card -->
+      <div id="boot-status-box" class="boot-status-box">
+        <div class="boot-text">
+          <span id="boot-status-text" style="font-family:var(--font-mono); font-size:0.78rem; color:var(--text-sub);">
+            Awaiting neural initialization...
+          </span>
+          <span style="color:var(--accent-cyan); font-size:0.75rem;">SYNAPSE OS</span>
+        </div>
+        <div class="progress-bar-track">
+          <div id="boot-progress-fill" class="progress-bar-fill"></div>
+        </div>
+      </div>
+
+      <!-- Skip Button -->
+      <button id="skip-intro-btn" class="skip-btn">
+        SKIP INTRO →
+      </button>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       SCREEN 2: HOME — PROTOCOL SELECTION
+  ═════════════════════════════════════════════════════════════════════════ -->
+  <section id="home-screen" class="section-view">
+
+    <!-- Header -->
+    <div class="home-header anim-fade-up">
+      <h1 class="home-title">Synapse AI Training Simulator</h1>
+      <p class="home-subtitle">Choose Your Training Protocol</p>
+    </div>
+
+    <!-- Protocol Cards -->
+    <div class="protocol-cards-container">
+
+      <!-- TEAM ALPHA -->
+      <div class="protocol-card scanline-card shimmer-card anim-slide-right" data-tilt>
+        <div class="card-glare" style="
+          position: absolute; inset: 0; border-radius: 24px;
+          pointer-events: none; transition: background 0.2s ease;
+        "></div>
+
+        <div class="card-top">
+          <span class="team-badge">TEAM ALPHA</span>
+          <span class="card-icon">🧠</span>
+        </div>
+
+        <div>
+          <div class="card-title">TEAM ALPHA</div>
+          <div class="card-subtitle">Think Like AI</div>
+          <p class="card-desc">
+            Master communication, observation, and logical thinking
+            through interactive AI-powered challenges.
+          </p>
+        </div>
+
+        <button class="btn-enter-protocol" data-target="alpha">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round"
+              stroke-linejoin="round" stroke-width="2"
+              d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+          </svg>
+          ENTER PROTOCOL
+        </button>
+      </div>
+
+      <!-- TEAM BETA -->
+      <div class="protocol-card beta-card scanline-card scanline-card beta-scan shimmer-card anim-slide-left" data-tilt>
+        <div class="card-glare" style="
+          position: absolute; inset: 0; border-radius: 24px;
+          pointer-events: none; transition: background 0.2s ease;
+        "></div>
+
+        <div class="card-top">
+          <span class="team-badge">TEAM BETA</span>
+          <span class="card-icon" style="filter: drop-shadow(0 0 12px var(--accent-cyan));">✨</span>
+        </div>
+
+        <div>
+          <div class="card-title">TEAM BETA</div>
+          <div class="card-subtitle" style="color: var(--accent-cyan);">Create With AI</div>
+          <p class="card-desc">
+            Unleash creativity, imagination, and collaboration using
+            the latest AI technologies.
+          </p>
+        </div>
+
+        <button class="btn-enter-protocol" data-target="beta">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round"
+              stroke-linejoin="round" stroke-width="2"
+              d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+          </svg>
+          ENTER PROTOCOL
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       SCREEN 3: TEAM ALPHA — MISSION PATH
+  ═════════════════════════════════════════════════════════════════════════ -->
+  <section id="alpha-screen" class="section-view">
+    <div class="protocol-stage-container">
+
+      <!-- Header -->
+      <div class="protocol-header anim-fade-up">
+        <h1>TEAM ALPHA</h1>
+        <p>Think Like AI — Mission Protocol</p>
+      </div>
+
+      <!-- Mission Path Wrapper -->
+      <div class="mission-path-wrapper">
+        <!-- SVG Connecting Lines -->
+        <svg id="alpha-path-svg" class="path-svg-lines" xmlns="http://www.w3.org/2000/svg"></svg>
+
+        <!-- Mission Cards Grid -->
+        <div id="alpha-mission-cards" class="mission-cards-grid">
+          <!-- Cards injected by JS -->
+        </div>
+      </div>
+
+      <!-- Bottom Actions -->
+      <div class="protocol-bottom-bar anim-fade-up">
+        <button class="btn-return-home">← Return Home</button>
+        <div class="completion-banner" style="display:none;" id="alpha-complete-banner">
+          ✅ PROTOCOL COMPLETE
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       SCREEN 4: TEAM BETA — MISSION PATH
+  ═════════════════════════════════════════════════════════════════════════ -->
+  <section id="beta-screen" class="section-view">
+    <div class="protocol-stage-container">
+
+      <!-- Header -->
+      <div class="protocol-header beta anim-fade-up">
+        <h1>TEAM BETA</h1>
+        <p style="color: var(--accent-cyan);">Create With AI — Mission Protocol</p>
+      </div>
+
+      <!-- Mission Path Wrapper -->
+      <div class="mission-path-wrapper">
+        <svg id="beta-path-svg" class="path-svg-lines" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div id="beta-mission-cards" class="mission-cards-grid">
+          <!-- Cards injected by JS -->
+        </div>
+      </div>
+
+      <!-- Bottom Actions -->
+      <div class="protocol-bottom-bar anim-fade-up">
+        <button class="btn-return-home">← Return Home</button>
+        <div class="completion-banner" style="display:none;" id="beta-complete-banner">
+          ✅ PROTOCOL COMPLETE
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       MISSION LAUNCHER MODAL
+  ═════════════════════════════════════════════════════════════════════════ -->
+  <div id="mission-modal-overlay" class="modal-overlay">
+    <div class="mission-modal-card">
+      <button id="modal-close-btn" class="modal-close-btn">✕</button>
+      <div class="modal-header">
+        <div id="modal-mission-badge" class="modal-badge">MISSION 01</div>
+        <div id="modal-mission-title" class="modal-title">Mission Title</div>
+      </div>
+      <div id="modal-mission-body" class="modal-body">
+        <!-- Injected by MissionModalController -->
+      </div>
+      <div class="modal-actions">
+        <button class="btn-launch-mission shimmer-card" onclick="document.getElementById('mission-modal-overlay').classList.remove('active')">
+          CLOSE
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       MINIMAL FOOTER
+  ═════════════════════════════════════════════════════════════════════════ -->
+  <footer class="minimal-footer">
+    <img src="assets/images/synapse_logo.jpg" alt="Synapse" class="footer-logo">
+    <span>Powered by</span>
+    <span style="color: var(--neon-purple); font-weight: 700; letter-spacing: 0.05em;">The Synapse Society</span>
+  </footer>
+
+  <!-- ── Scripts ────────────────────────────────────────────────────────── -->
+  <script src="assets/js/sounds.js"></script>
+  <script src="assets/js/neural-canvas.js"></script>
+  <script src="assets/js/app.js"></script>
+
+</body>
+</html>

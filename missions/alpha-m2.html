@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mission 02 — AI Emoji Decoder | The Synapse Society</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/animations.css">
+  <link rel="stylesheet" href="../assets/css/missions.css">
+  <style>
+    .mcq-options { display:flex; flex-direction:column; gap:0.8rem; width:100%; max-width:480px; margin:1.5rem auto; }
+    .mcq-option {
+      padding:1rem 1.4rem; border-radius:12px; cursor:pointer; text-align:left;
+      background:rgba(255,255,255,0.04); border:1px solid var(--border-glass);
+      font-size:0.95rem; color:var(--text-sub); font-weight:500;
+      transition:all 0.25s ease; display:flex; align-items:center; gap:10px;
+    }
+    .mcq-option:hover { border-color:var(--neon-purple); color:#fff; background:rgba(168,85,247,0.12); }
+    .mcq-option.correct { border-color:#10B981; background:rgba(16,185,129,0.2); color:#fff; }
+    .mcq-option.wrong   { border-color:#F43F5E; background:rgba(244,63,94,0.15); color:var(--text-muted); }
+    .question-counter { font-family:'Fira Code',monospace; font-size:0.75rem; color:var(--text-muted); letter-spacing:0.1em; margin-bottom:0.5rem; }
+  </style>
+</head>
+<body>
+  <canvas id="neural-canvas"></canvas>
+  <div class="ambient-glow top-left"></div>
+  <div class="ambient-glow bottom-right" style="background:radial-gradient(circle,rgba(0,243,255,0.2) 0%,transparent 70%);"></div>
+  <div class="grid-overlay"></div>
+  <div class="glitch-fx" id="glitch-fx"></div>
+  <div class="energy-pulse-overlay" id="energy-pulse"></div>
+
+  <header class="mission-top-bar">
+    <a href="../index.html" class="mission-top-logo">
+      <img src="../assets/images/synapse_logo.jpg" alt="Synapse">
+      <span>THE SYNAPSE SOCIETY</span>
+    </a>
+    <div class="mission-top-center" id="stage-indicator">MISSION 02 // AI EMOJI DECODER</div>
+    <div class="mission-top-right">
+      <a href="../index.html" class="mission-home-btn">← Home</a>
+    </div>
+  </header>
+
+  <!-- STAGE 1: Glitch Opening -->
+  <section class="stage active" id="stage-1">
+    <p class="mission-label" style="color:#10B981;">MISSION STATUS</p>
+    <h2 class="mission-title-lg" style="background:linear-gradient(135deg,#fff,#10B981);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.5rem;">Prompt Engineering Module Restored</h2>
+    <div id="warning-box" style="display:none;margin:1.5rem 0;">
+      <p class="mission-label" style="color:#F43F5E;">⚠ WARNING</p>
+      <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700;color:#F43F5E;">Language Module Corrupted...</h3>
+    </div>
+    <div id="protocol-box" style="display:none;margin:1rem 0;max-width:500px;">
+      <p style="font-family:'Fira Code',monospace;font-size:0.9rem;color:var(--accent-cyan);line-height:1.8;" id="protocol-text"></p>
+    </div>
+    <div id="mission02-reveal" style="display:none;text-align:center;">
+      <p class="mission-label">MISSION 02</p>
+      <h1 class="mission-title-xl">AI EMOJI DECODER</h1>
+      <p class="mission-subtitle">"Can you understand AI when it stops using words?"</p>
+      <button class="btn-mission-primary" id="s1-next">BEGIN MISSION</button>
+    </div>
+  </section>
+
+  <!-- STAGE 2: Story -->
+  <section class="stage" id="stage-2">
+    <div class="glass-mission-card" style="max-width:640px;width:90%;text-align:left;">
+      <p class="mission-label" style="color:#F43F5E;">SYSTEM ALERT</p>
+      <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1.2rem;color:#F43F5E;margin-bottom:1.2rem;">Communication Failure Detected</h3>
+      <div class="typewriter-box" id="story-text"></div>
+    </div>
+    <button class="btn-mission-secondary" id="s2-next" style="margin-top:1.5rem;display:none;">CONTINUE →</button>
+  </section>
+
+  <!-- STAGE 3: Objective + Rules -->
+  <section class="stage" id="stage-3">
+    <p class="mission-label">MISSION BRIEFING</p>
+    <h2 class="mission-title-lg" style="margin-bottom:1.5rem;">Decode The AI</h2>
+    <ul class="rules-list" id="obj-rules-list">
+      <li class="rule-item"><span class="rule-icon">👀</span>Observe the emoji transmission carefully</li>
+      <li class="rule-item"><span class="rule-icon">🤔</span>Think quickly and decode the technology</li>
+      <li class="rule-item"><span class="rule-icon">✋</span>Raise your hand — wait until called</li>
+      <li class="rule-item"><span class="rule-icon">🚫</span>No shouting answers out of turn</li>
+      <li class="rule-item"><span class="rule-icon">📵</span>No mobile phones allowed</li>
+    </ul>
+    <button class="btn-mission-primary" id="s3-next" style="margin-top:1.5rem;">ENTER TRANSMISSION ROOM →</button>
+  </section>
+
+  <!-- STAGE 4: Signal Receiver / Question Engine -->
+  <section class="stage" id="stage-4">
+
+    <!-- Signal Loading Phase -->
+    <div id="signal-phase">
+      <p class="mission-label" id="signal-label">RECEIVING AI SIGNAL...</p>
+      <div class="signal-loader-bar"><div class="signal-loader-fill" id="signal-fill"></div></div>
+      <p style="font-family:'Fira Code',monospace;font-size:0.8rem;color:var(--text-muted);margin-top:0.5rem;" id="signal-status">Establishing connection...</p>
+    </div>
+
+    <!-- Emoji Reveal Phase -->
+    <div id="emoji-phase" style="display:none;text-align:center;width:100%;">
+      <div class="question-counter" id="q-counter">TRANSMISSION 01 / 15</div>
+      <div class="emoji-reveal-row" id="emoji-row"></div>
+
+      <!-- Circular Countdown -->
+      <div class="circular-timer-wrap">
+        <svg viewBox="0 0 220 220">
+          <circle class="timer-track" cx="110" cy="110" r="96"/>
+          <circle id="q-timer-ring" class="timer-fill" cx="110" cy="110" r="96" style="stroke-dasharray:603.2;stroke-dashoffset:0;"/>
+        </svg>
+        <div class="timer-center">
+          <div id="q-timer-digits" class="timer-digits">15</div>
+          <div class="timer-label">SECONDS</div>
+        </div>
+      </div>
+
+      <button class="btn-mission-primary" id="reveal-btn" style="margin-top:0.5rem;">REVEAL ANSWER</button>
+    </div>
+
+    <!-- Answer Phase -->
+    <div id="answer-phase" style="display:none;text-align:center;width:100%;">
+      <p class="mission-label" style="color:#10B981;">✓ TRANSMISSION DECODED</p>
+      <div class="reveal-card visible" id="answer-card">
+        <div class="reveal-card-title" id="answer-name"></div>
+        <div class="reveal-card-sub" id="answer-emojis"></div>
+        <div class="reveal-card-body" id="answer-desc"></div>
+        <div class="reveal-card-tag" id="answer-usage"></div>
+      </div>
+      <div style="display:flex;gap:1rem;justify-content:center;margin-top:1.5rem;">
+        <button class="btn-mission-primary" id="next-q-btn">NEXT TRANSMISSION →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- STAGE 5: Final -->
+  <section class="stage" id="stage-5">
+    <p class="mission-label" style="color:#10B981;">COMMUNICATION MODULE RESTORED — 100%</p>
+    <div class="module-progress-track" style="max-width:400px;margin-bottom:2rem;">
+      <div class="module-progress-bar"><div class="module-progress-fill" style="width:100%;"></div></div>
+    </div>
+    <h1 class="mission-title-xl" style="margin-bottom:0.5rem;">MISSION COMPLETE</h1>
+    <h3 style="font-family:'Space Grotesk',sans-serif;color:var(--neon-purple);margin-bottom:1rem;font-size:1.2rem;">Excellent Work, Agent.</h3>
+    <p class="mission-subtitle">You successfully decoded every transmission.<br>The Synapse AI can communicate once again.</p>
+    <div class="intro-logo-box float-element" style="margin:2rem auto;width:80px;height:80px;">
+      <img src="../assets/images/synapse_logo.jpg" class="intro-logo-img assembled" alt="Synapse" style="border-radius:16px;">
+    </div>
+    <p style="color:var(--neon-purple);font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:0.08em;margin-bottom:1.5rem;">Think Faster. Decode Smarter. Build the Future.</p>
+    <a href="../index.html"><button class="btn-mission-secondary">RETURN HOME</button></a>
+  </section>
+
+  <!-- Presenter FAB -->
+  <button class="presenter-toggle-fab" id="presenter-fab" title="Presenter Panel (P)">⚙</button>
+  <div class="presenter-panel" id="presenter-panel">
+    <h3>⚙ Presenter Panel</h3>
+    <label>Jump to Question</label>
+    <select id="pp-q-jump">
+      <option value="0">Auto (next)</option>
+    </select>
+    <button class="presenter-btn" id="pp-jump-btn">Jump to Selected</button>
+    <hr style="border-color:rgba(255,255,255,0.08);margin:1rem 0;">
+    <button class="presenter-btn" id="pp-reveal-pp">Reveal Answer</button>
+    <button class="presenter-btn" id="pp-next-q">Next Transmission</button>
+    <button class="presenter-btn danger" id="pp-restart">↺ Restart Mission</button>
+  </div>
+
+  <script src="../assets/js/sounds.js"></script>
+  <script src="../assets/js/neural-canvas.js"></script>
+  <script src="../assets/js/missions/alpha-m2.js"></script>
+</body>
+</html>

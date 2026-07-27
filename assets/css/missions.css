@@ -1,0 +1,707 @@
+/* ==========================================================================
+   THE SYNAPSE SOCIETY — SHARED MISSION STYLES
+   Used across all 6 mission pages
+   ========================================================================== */
+
+/* ── Stage System ─────────────────────────────────────────────────────────── */
+.stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 2rem 48px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  text-align: center;
+  z-index: 10;
+}
+.stage.active {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 20;
+}
+
+/* ── Shared Typography ────────────────────────────────────────────────────── */
+.mission-label {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--accent-cyan);
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+.mission-title-xl {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #fff 0%, #e2e8f0 55%, var(--neon-purple) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+}
+.mission-title-lg {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  background: linear-gradient(135deg, #fff 20%, var(--neon-purple) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+}
+.mission-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-sub);
+  font-style: italic;
+  margin-bottom: 2rem;
+  max-width: 680px;
+}
+.mission-quote {
+  font-size: 1.2rem;
+  color: var(--text-sub);
+  font-style: italic;
+  font-weight: 500;
+  max-width: 600px;
+  line-height: 1.6;
+  border-left: 3px solid var(--neon-purple);
+  padding-left: 1rem;
+  text-align: left;
+}
+
+/* ── Primary Action Button ────────────────────────────────────────────────── */
+.btn-mission-primary {
+  padding: 14px 36px;
+  border-radius: 50px;
+  background: linear-gradient(135deg, var(--primary-purple), var(--neon-purple));
+  border: none;
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  box-shadow: 0 0 30px rgba(168,85,247,0.5);
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  animation: glowPulse 2.5s ease-in-out infinite;
+}
+.btn-mission-primary:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 0 50px rgba(168,85,247,0.8);
+}
+.btn-mission-secondary {
+  padding: 10px 24px;
+  border-radius: 50px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border-glass);
+  color: var(--text-sub);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn-mission-secondary:hover {
+  color: #fff;
+  border-color: var(--neon-purple);
+  background: rgba(168,85,247,0.15);
+}
+
+/* ── Glass Card ───────────────────────────────────────────────────────────── */
+.glass-mission-card {
+  background: rgba(20, 16, 38, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass);
+  border-radius: 20px;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.glass-mission-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--neon-purple), transparent);
+  opacity: 0.6;
+}
+
+/* ── Typewriter Container ─────────────────────────────────────────────────── */
+.typewriter-box {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.05rem;
+  color: var(--text-sub);
+  line-height: 1.9;
+  text-align: left;
+  max-width: 700px;
+  min-height: 180px;
+}
+.typewriter-box .highlight {
+  color: var(--neon-purple);
+  font-weight: 700;
+}
+.typewriter-box .accent {
+  color: var(--accent-cyan);
+  font-weight: 700;
+}
+
+/* ── Circular Countdown Timer ─────────────────────────────────────────────── */
+.circular-timer-wrap {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  margin: 0 auto 2rem;
+}
+.circular-timer-wrap svg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.timer-track { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 8; }
+.timer-fill  { fill: none; stroke: var(--neon-purple); stroke-width: 8;
+               stroke-linecap: round; transition: stroke-dashoffset 1s linear;
+               filter: drop-shadow(0 0 8px var(--neon-purple)); }
+.timer-fill.warning { stroke: #F59E0B; filter: drop-shadow(0 0 8px #F59E0B); }
+.timer-fill.danger  { stroke: #F43F5E; filter: drop-shadow(0 0 8px #F43F5E); animation: dangerPulse 0.5s ease-in-out infinite alternate; }
+@keyframes dangerPulse {
+  from { opacity: 1; }
+  to   { opacity: 0.5; }
+}
+.timer-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.timer-digits {
+  font-family: 'Fira Code', monospace;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.05em;
+}
+.timer-label {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.7rem;
+  color: var(--accent-cyan);
+  letter-spacing: 0.15em;
+  margin-top: 4px;
+}
+
+/* ── Module Progress Bar ──────────────────────────────────────────────────── */
+.module-progress-track {
+  width: 100%;
+  max-width: 500px;
+  margin: 1.2rem auto 0;
+}
+.module-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.module-progress-bar {
+  height: 8px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.module-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-purple), var(--accent-cyan));
+  border-radius: 4px;
+  transition: width 0.8s cubic-bezier(0.16,1,0.3,1);
+  box-shadow: 0 0 10px var(--accent-cyan);
+}
+
+/* ── Rule Checklist ───────────────────────────────────────────────────────── */
+.rules-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  text-align: left;
+  max-width: 520px;
+  width: 100%;
+}
+.rule-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 1.2rem;
+  background: rgba(168,85,247,0.08);
+  border: 1px solid rgba(168,85,247,0.2);
+  border-radius: 12px;
+  font-size: 0.95rem;
+  color: var(--text-sub);
+  font-weight: 500;
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.4s ease, transform 0.4s ease, border-color 0.3s ease;
+}
+.rule-item.visible { opacity: 1; transform: translateX(0); }
+.rule-item:hover   { border-color: var(--neon-purple); color: #fff; }
+.rule-icon { font-size: 1.3rem; flex-shrink: 0; }
+
+/* ── Presenter Panel ──────────────────────────────────────────────────────── */
+.presenter-panel {
+  position: fixed;
+  bottom: 0; right: 0;
+  width: 320px;
+  max-height: 90vh;
+  background: rgba(10, 8, 20, 0.95);
+  border: 1px solid var(--border-glass-bright);
+  border-radius: 16px 0 0 0;
+  padding: 1.5rem;
+  z-index: 9000;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.presenter-panel.open { transform: translateX(0); }
+.presenter-panel h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--neon-purple);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+.presenter-panel label {
+  display: block;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  margin-top: 10px;
+}
+.presenter-panel select, .presenter-panel input {
+  width: 100%;
+  padding: 8px 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border-glass);
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.8rem;
+}
+.presenter-panel .presenter-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 9px;
+  border-radius: 8px;
+  background: rgba(168,85,247,0.25);
+  border: 1px solid var(--border-glass-bright);
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.presenter-panel .presenter-btn:hover {
+  background: var(--neon-purple);
+}
+.presenter-panel .presenter-btn.danger {
+  background: rgba(244,63,94,0.2);
+  border-color: rgba(244,63,94,0.4);
+}
+.presenter-panel .presenter-btn.danger:hover {
+  background: var(--accent-rose);
+}
+.presenter-toggle-fab {
+  position: fixed;
+  bottom: 1.5rem; right: 1.5rem;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: rgba(168,85,247,0.3);
+  border: 1px solid var(--border-glass-bright);
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 9001;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(168,85,247,0.4);
+}
+.presenter-toggle-fab:hover { background: var(--neon-purple); transform: scale(1.1); }
+
+/* ── Answer Reveal Card ───────────────────────────────────────────────────── */
+.reveal-card {
+  background: rgba(20,16,38,0.85);
+  border: 1px solid var(--border-glass-bright);
+  border-radius: 20px;
+  padding: 1.8rem 2.2rem;
+  max-width: 620px;
+  width: 90%;
+  box-shadow: 0 0 40px rgba(168,85,247,0.3);
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.reveal-card.visible { opacity: 1; transform: scale(1); }
+.reveal-card-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--neon-purple);
+  margin-bottom: 0.5rem;
+}
+.reveal-card-sub {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  font-family: 'Fira Code', monospace;
+  letter-spacing: 0.08em;
+  margin-bottom: 1rem;
+}
+.reveal-card-body {
+  font-size: 0.95rem;
+  color: var(--text-sub);
+  line-height: 1.65;
+}
+.reveal-card-tag {
+  display: inline-block;
+  margin-top: 0.8rem;
+  padding: 5px 14px;
+  border-radius: 20px;
+  background: rgba(0,243,255,0.12);
+  border: 1px solid rgba(0,243,255,0.3);
+  font-family: 'Fira Code', monospace;
+  font-size: 0.75rem;
+  color: var(--accent-cyan);
+  letter-spacing: 0.06em;
+}
+
+/* ── Energy Pulse Overlay ─────────────────────────────────────────────────── */
+.energy-pulse-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 800;
+  background: radial-gradient(circle at center, rgba(168,85,247,0.25) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.energy-pulse-overlay.pulse-active {
+  animation: energyPulse 0.8s ease-out forwards;
+}
+@keyframes energyPulse {
+  0%   { opacity: 0; transform: scale(0.6); }
+  30%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.4); }
+}
+
+/* ── Glitch Overlay ───────────────────────────────────────────────────────── */
+.glitch-fx {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 900;
+  opacity: 0;
+}
+.glitch-fx.active {
+  animation: glitchBurst 0.55s ease forwards;
+}
+@keyframes glitchBurst {
+  0%   { opacity: 0; }
+  15%  { opacity: 1; background: rgba(138,43,226,0.35); filter: hue-rotate(60deg); }
+  35%  { background: rgba(0,0,0,0.8); filter: invert(0.2) hue-rotate(-90deg); }
+  60%  { opacity: 0.6; background: rgba(0,243,255,0.12); filter: none; }
+  100% { opacity: 0; }
+}
+
+/* ── Top mini header for mission pages ───────────────────────────────────── */
+.mission-top-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  background: rgba(9,9,9,0.75);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-glass);
+  z-index: 500;
+}
+.mission-top-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.mission-top-logo img {
+  width: 30px; height: 30px;
+  border-radius: 6px;
+  border: 1px solid var(--border-glass-bright);
+  box-shadow: 0 0 10px var(--deep-purple-glow);
+}
+.mission-top-logo span {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #fff;
+}
+.mission-top-center {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.78rem;
+  color: var(--accent-cyan);
+  letter-spacing: 0.1em;
+}
+.mission-top-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.mission-home-btn {
+  padding: 6px 16px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border-glass);
+  color: var(--text-muted);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  letter-spacing: 0.04em;
+}
+.mission-home-btn:hover { color: #fff; border-color: var(--neon-purple); }
+
+/* ── XP Animation ─────────────────────────────────────────────────────────── */
+.xp-badge {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #F59E0B, #fff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: xpPop 0.6s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes xpPop {
+  from { transform: scale(0.3); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+/* ── Emoji Reveal ─────────────────────────────────────────────────────────── */
+.emoji-reveal-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 1.5rem 0;
+}
+.emoji-token {
+  font-size: 3.5rem;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  filter: drop-shadow(0 0 14px rgba(168,85,247,0.8));
+  cursor: default;
+}
+.emoji-token.revealed { opacity: 1; transform: scale(1); }
+.emoji-token:hover    { transform: scale(1.15); }
+
+/* ── Signal Loader ────────────────────────────────────────────────────────── */
+.signal-loader-bar {
+  width: 280px;
+  height: 10px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 1rem auto;
+}
+.signal-loader-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--neon-purple), var(--accent-cyan));
+  border-radius: 5px;
+  box-shadow: 0 0 12px var(--neon-purple);
+  width: 0%;
+  transition: width 0.15s linear;
+}
+
+/* ── Scanner HUD ──────────────────────────────────────────────────────────── */
+.scanner-frame {
+  position: relative;
+  display: inline-block;
+  max-width: 480px;
+  width: 90%;
+}
+.scanner-img-wrap {
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 2px solid var(--neon-purple);
+  box-shadow: 0 0 30px rgba(168,85,247,0.4);
+  position: relative;
+}
+.scanner-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: center;
+  transition: transform 2s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.scanner-scan-line {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+  box-shadow: 0 0 10px var(--accent-cyan);
+  animation: scanSweep 2s linear infinite;
+}
+@keyframes scanSweep {
+  0%   { top: 0; opacity: 1; }
+  95%  { top: 100%; opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+.scanner-corner {
+  position: absolute;
+  width: 20px; height: 20px;
+  border-color: var(--accent-cyan);
+  border-style: solid;
+  box-shadow: 0 0 8px var(--accent-cyan);
+}
+.sc-tl { top: -2px;  left: -2px;  border-width: 3px 0 0 3px; }
+.sc-tr { top: -2px;  right: -2px; border-width: 3px 3px 0 0; }
+.sc-bl { bottom: -2px; left: -2px;  border-width: 0 0 3px 3px; }
+.sc-br { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; }
+.hud-label {
+  position: absolute;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.68rem;
+  color: var(--accent-cyan);
+  letter-spacing: 0.08em;
+  background: rgba(0,0,0,0.7);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.hud-tl { top: 10px; left: 10px; }
+.hud-tr { top: 10px; right: 10px; }
+.hud-bl { bottom: 10px; left: 10px; }
+.hud-br { bottom: 10px; right: 10px; }
+
+/* ── Agent Chain ──────────────────────────────────────────────────────────── */
+.agent-chain {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 1rem 0;
+  max-width: 900px;
+}
+.agent-node-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.agent-node {
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  background: rgba(168,85,247,0.12);
+  border: 2px solid rgba(168,85,247,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  transition: all 0.4s ease;
+  position: relative;
+}
+.agent-node.active {
+  background: rgba(168,85,247,0.3);
+  border-color: var(--neon-purple);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(168,85,247,0.6);
+}
+.agent-node.transmitted {
+  background: rgba(0,243,255,0.15);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  box-shadow: 0 0 15px rgba(0,243,255,0.4);
+}
+.agent-connector {
+  width: 28px; height: 2px;
+  background: rgba(168,85,247,0.25);
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.agent-connector.active::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, var(--neon-purple), transparent);
+  animation: connectorPulse 0.8s ease forwards;
+}
+@keyframes connectorPulse {
+  from { left: -100%; }
+  to   { left: 100%; }
+}
+.agent-label {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+/* ── Comparison Layout ────────────────────────────────────────────────────── */
+.compare-wrap {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  justify-content: center;
+  max-width: 900px;
+  width: 90%;
+}
+.compare-side {
+  flex: 1;
+  text-align: center;
+}
+.compare-label {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.8rem;
+}
+.compare-label.original { color: var(--accent-cyan); }
+.compare-label.generated { color: var(--neon-purple); }
+.compare-prompt-text {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-glass);
+  border-radius: 12px;
+  padding: 1rem;
+  font-size: 0.92rem;
+  color: var(--text-sub);
+  line-height: 1.6;
+  text-align: left;
+  min-height: 80px;
+}
+.diff-word { display: inline; }
+.diff-word.match   { color: #4ade80; }
+.diff-word.changed { color: #fbbf24; text-decoration: underline dotted; }
+.diff-word.missing { color: #f87171; text-decoration: line-through; }

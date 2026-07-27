@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mission 03 — Operation Synapse Restore | The Synapse Society</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/animations.css">
+  <link rel="stylesheet" href="../assets/css/missions.css">
+  <style>
+    /* Module card stacks */
+    .module-card-grid { display:flex; flex-wrap:wrap; gap:1.2rem; justify-content:center; max-width:820px; width:90%; }
+    .mc { flex:0 0 calc(33.333% - 1rem); min-width:220px; padding:1.4rem; border-radius:16px; cursor:pointer;
+          background:rgba(20,16,38,0.7); border:1px solid var(--border-glass); backdrop-filter:blur(16px);
+          transition:all 0.3s ease; text-align:center; }
+    .mc:hover { border-color:var(--neon-purple); transform:translateY(-4px); box-shadow:0 8px 25px rgba(168,85,247,0.25); }
+    .mc.correct { border-color:#10B981; background:rgba(16,185,129,0.15); }
+    .mc-icon { font-size:2rem; margin-bottom:0.5rem; }
+    .mc-label { font-family:'Space Grotesk',sans-serif; font-weight:700; color:#fff; }
+    /* Stack order animation */
+    .stack-arrow { display:flex; flex-direction:column; align-items:center; gap:0.5rem; }
+    .stack-item { display:flex; align-items:center; gap:1rem; padding:0.8rem 1.2rem; border-radius:10px;
+                  background:rgba(20,16,38,0.7); border:1px solid var(--border-glass); min-width:220px;
+                  opacity:0; transform:translateX(-20px); transition:all 0.4s ease; }
+    .stack-item.placed { opacity:1; transform:translateX(0); border-color:var(--neon-purple); }
+    .stack-item .arrow-down { color:var(--neon-purple); font-size:1.2rem; text-align:center; align-self:center; }
+    /* Clue boxes */
+    .clue-line { font-family:'Fira Code',monospace; font-size:1rem; color:var(--accent-cyan);
+                 padding:0.6rem 0; border-bottom:1px solid rgba(255,255,255,0.05); text-align:left;
+                 opacity:0; transform:translateY(8px); transition:all 0.5s ease; }
+    .clue-line.shown { opacity:1; transform:translateY(0); }
+    /* Phishing comparison */
+    .phish-compare { display:flex; gap:2rem; justify-content:center; max-width:800px; width:90%; flex-wrap:wrap; }
+    .phish-card { flex:1; min-width:280px; border-radius:16px; overflow:hidden; border:2px solid var(--border-glass); position:relative; }
+    .phish-card.real    { border-color:rgba(16,185,129,0.5); }
+    .phish-card.fake    { border-color:rgba(244,63,94,0.5); }
+    .phish-card-label   { padding:0.5rem; font-family:'Fira Code',monospace; font-size:0.72rem; letter-spacing:0.08em; text-align:center; }
+    .phish-card.real .phish-card-label { background:rgba(16,185,129,0.25); color:#10B981; }
+    .phish-card.fake .phish-card-label { background:rgba(244,63,94,0.2); color:#F43F5E; }
+    .phish-browser-bar { background:rgba(255,255,255,0.06); padding:0.6rem 1rem; font-family:'Fira Code',monospace; font-size:0.75rem; display:flex; align-items:center; gap:8px; }
+    .lock-icon { color:#10B981; }
+    .url-text { color:var(--text-muted); }
+    .url-text.suspicious { color:#F43F5E; }
+    .phish-body { padding:1.8rem; background:rgba(255,255,255,0.02); min-height:200px; display:flex; flex-direction:column; align-items:center; gap:1rem; }
+    .phish-logo-fake { font-family:'Space Grotesk',sans-serif; font-size:1.4rem; font-weight:700; color:#fff; letter-spacing:0.05em; }
+    .phish-logo-fake.misaligned { margin-left:12px; font-size:1.2rem; }
+    .phish-field { width:100%; padding:0.6rem; border-radius:6px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); font-size:0.85rem; color:var(--text-muted); text-align:left; }
+    .phish-btn { padding:0.6rem 2rem; border-radius:6px; font-weight:700; font-size:0.85rem; cursor:default; letter-spacing:0.05em; }
+    .phish-card.real .phish-btn { background:#1a73e8; color:#fff; }
+    .phish-card.fake .phish-btn { background:#1565c0; color:#fff; font-size:0.8rem; border:1px dashed rgba(255,255,255,0.2); }
+    .warning-overlay { position:absolute; inset:0; background:rgba(244,63,94,0.15); display:none; align-items:center; justify-content:center; border:3px solid #F43F5E; border-radius:16px; }
+    .warning-overlay p { color:#F43F5E; font-weight:800; font-size:1.2rem; font-family:'Space Grotesk',sans-serif; background:rgba(0,0,0,0.8); padding:0.5rem 1.2rem; border-radius:8px; }
+    /* Mission timer overlay */
+    #mission-timer-display { position:fixed; top:68px; right:1.5rem; z-index:400;
+      font-family:'Fira Code',monospace; font-size:1.1rem; color:var(--neon-purple);
+      background:rgba(9,9,9,0.85); border:1px solid var(--border-glass-bright); border-radius:10px;
+      padding:6px 14px; letter-spacing:0.06em; box-shadow:0 0 12px rgba(168,85,247,0.3); display:none; }
+  </style>
+</head>
+<body>
+  <canvas id="neural-canvas"></canvas>
+  <div class="ambient-glow top-left"></div>
+  <div class="ambient-glow bottom-right" style="background:radial-gradient(circle,rgba(244,63,94,0.15) 0%,transparent 70%);"></div>
+  <div class="grid-overlay"></div>
+  <div class="glitch-fx" id="glitch-fx"></div>
+  <div class="energy-pulse-overlay" id="energy-pulse"></div>
+  <div id="mission-timer-display">⏱ 15:00</div>
+
+  <header class="mission-top-bar">
+    <a href="../index.html" class="mission-top-logo">
+      <img src="../assets/images/synapse_logo.jpg" alt="Synapse">
+      <span>THE SYNAPSE SOCIETY</span>
+    </a>
+    <div class="mission-top-center" id="stage-indicator">MISSION 03 // OPERATION SYNAPSE RESTORE</div>
+    <div class="mission-top-right">
+      <a href="../index.html" class="mission-home-btn">← Home</a>
+    </div>
+  </header>
+
+  <!-- S1: Cinematic Opening -->
+  <section class="stage active" id="stage-1">
+    <div class="glass-mission-card" style="max-width:600px;width:90%;text-align:left;">
+      <p class="mission-label" style="color:#10B981;">SYSTEM BOOTING...</p>
+      <div class="module-progress-track" style="margin-bottom:1.5rem;">
+        <div class="module-progress-bar"><div class="module-progress-fill" id="boot-fill" style="width:0%;"></div></div>
+      </div>
+      <div id="failure-reveal" style="display:none;">
+        <p class="mission-label" style="color:#F43F5E;">⚠ CRITICAL FAILURE</p>
+        <h2 style="font-family:'Space Grotesk',sans-serif;font-size:1.6rem;font-weight:800;color:#F43F5E;margin-bottom:1rem;">Synapse Core Offline</h2>
+      </div>
+      <div id="briefing-text" class="typewriter-box" style="display:none;"></div>
+    </div>
+    <button class="btn-mission-primary" id="s1-next" style="margin-top:1.5rem;display:none;">BEGIN OPERATION →</button>
+  </section>
+
+  <!-- S2: Mission Brief + Rules -->
+  <section class="stage" id="stage-2">
+    <p class="mission-label" style="color:#F43F5E;">CLASSIFIED BRIEFING</p>
+    <h1 class="mission-title-xl" style="font-size:2.5rem;margin-bottom:0.3rem;">OPERATION SYNAPSE RESTORE</h1>
+    <p class="mission-subtitle">Restore all five encrypted modules to bring the Synapse AI back online.</p>
+    <ul class="rules-list" id="rules-list">
+      <li class="rule-item"><span class="rule-icon">👥</span>Teams of 4 — collaborate with your group</li>
+      <li class="rule-item"><span class="rule-icon">🪑</span>Stay seated during the operation</li>
+      <li class="rule-item"><span class="rule-icon">🔒</span>Solve modules in sequence — no skipping</li>
+      <li class="rule-item"><span class="rule-icon">⏱</span>15-minute countdown — failure is not an option</li>
+      <li class="rule-item"><span class="rule-icon">🏆</span>First team to restore Synapse wins</li>
+    </ul>
+    <button class="btn-mission-primary" id="s2-next" style="margin-top:1.5rem;">COMMENCE OPERATION →</button>
+  </section>
+
+  <!-- S3: Module 1 — Tech Origins -->
+  <section class="stage" id="stage-3">
+    <div class="module-progress-track" style="max-width:600px;margin-bottom:1.5rem;">
+      <div class="module-progress-label"><span>MODULE 1 / 5 — TECH ORIGINS</span><span>20%</span></div>
+      <div class="module-progress-bar"><div class="module-progress-fill" style="width:0%;" id="m1-progress"></div></div>
+    </div>
+    <div class="glass-mission-card" style="max-width:620px;width:90%;">
+      <p style="font-family:'Fira Code',monospace;font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;">MODULE 01 // TECH ORIGINS</p>
+      <p style="color:var(--text-sub);font-size:0.9rem;margin-bottom:1.5rem;">Every technology has an origin. Recover the missing historical record.</p>
+      <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:700;color:#fff;margin-bottom:1.5rem;">GitHub was founded in which year?</h3>
+      <div class="module-card-grid" style="max-width:500px;">
+        <div class="mc" data-val="2005"><div class="mc-icon">📅</div><div class="mc-label">2005</div></div>
+        <div class="mc" data-val="2007"><div class="mc-icon">📅</div><div class="mc-label">2007</div></div>
+        <div class="mc" data-val="2008"><div class="mc-icon">📅</div><div class="mc-label">2008</div></div>
+        <div class="mc" data-val="2010"><div class="mc-icon">📅</div><div class="mc-label">2010</div></div>
+      </div>
+    </div>
+    <div id="m1-reveal" style="display:none;margin-top:1.2rem;">
+      <div class="reveal-card visible" style="max-width:580px;margin:0 auto;">
+        <div class="reveal-card-title">2008 ✓</div>
+        <div class="reveal-card-body">GitHub was launched in 2008 and quickly became the world's largest platform for collaborative software development using Git. Today, millions of developers use it to build open-source and enterprise projects.</div>
+      </div>
+      <div style="display:flex;gap:1rem;justify-content:center;margin-top:1rem;">
+        <div class="module-progress-track" style="max-width:300px;">
+          <div class="module-progress-bar"><div class="module-progress-fill" id="m1-prog-fill" style="width:0%;"></div></div>
+        </div>
+        <button class="btn-mission-primary" id="m1-next">MODULE 2 →</button>
+      </div>
+    </div>
+    <button class="presenter-btn" id="m1-reveal-btn" style="margin-top:1rem;background:rgba(168,85,247,0.2);border:1px solid var(--border-glass-bright);color:#fff;padding:8px 20px;border-radius:8px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;">REVEAL ANSWER</button>
+  </section>
+
+  <!-- S4: Module 2 — ASCII Decoder -->
+  <section class="stage" id="stage-4">
+    <div class="module-progress-track" style="max-width:600px;margin-bottom:1.5rem;">
+      <div class="module-progress-label"><span>MODULE 2 / 5 — ASCII DECRYPTION</span><span>40%</span></div>
+      <div class="module-progress-bar"><div class="module-progress-fill" style="width:20%;"></div></div>
+    </div>
+    <div class="glass-mission-card" style="max-width:640px;width:90%;">
+      <p style="font-family:'Fira Code',monospace;font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;">MODULE 02 // ASCII DECODER</p>
+      <p style="color:var(--text-sub);font-size:0.9rem;margin-bottom:1.5rem;">The AI stores information using numerical encoding. Decode the message before it is permanently lost.</p>
+      <div style="display:flex;gap:3rem;justify-content:center;align-items:flex-start;flex-wrap:wrap;">
+        <div style="font-family:'Fira Code',monospace;font-size:1.5rem;line-height:2;color:var(--accent-cyan);">83<br>69<br>82<br>86<br>69<br>82</div>
+        <div id="decoded-text" style="display:flex;flex-direction:column;gap:0.4rem;opacity:0;transition:opacity 0.6s ease;">
+          <div style="font-family:'Fira Code',monospace;font-size:0.75rem;color:var(--text-muted);margin-bottom:0.3rem;">DECODED →</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:800;color:var(--neon-purple);letter-spacing:0.2em;">SERVER</div>
+          <div style="margin-top:0.8rem;">
+            <div style="font-family:'Fira Code',monospace;font-size:0.75rem;color:var(--text-muted);margin-bottom:0.3rem;">UNSCRAMBLE →</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700;color:#F59E0B;letter-spacing:0.15em;">VRESER</div>
+            <div style="font-size:0.82rem;color:var(--text-muted);margin-top:0.3rem;">What is the correct word?</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="m2-reveal" style="display:none;margin-top:1.2rem;max-width:580px;width:90%;margin-left:auto;margin-right:auto;">
+      <div class="reveal-card visible">
+        <div class="reveal-card-title">SERVER ✓</div>
+        <div class="reveal-card-body">ASCII (American Standard Code for Information Interchange) assigns numeric values to characters so computers can store and process text. Every letter, number, and symbol has a corresponding ASCII code.</div>
+      </div>
+      <button class="btn-mission-primary" id="m2-next" style="margin-top:1rem;">MODULE 3 →</button>
+    </div>
+    <div style="display:flex;gap:1rem;justify-content:center;margin-top:1rem;">
+      <button class="presenter-btn" id="m2-decode-btn" style="background:rgba(0,243,255,0.15);border:1px solid rgba(0,243,255,0.4);color:var(--accent-cyan);padding:8px 20px;border-radius:8px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;">SHOW DECODE</button>
+      <button class="presenter-btn" id="m2-reveal-btn" style="background:rgba(168,85,247,0.2);border:1px solid var(--border-glass-bright);color:#fff;padding:8px 20px;border-radius:8px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;">REVEAL ANSWER</button>
+    </div>
+  </section>
+
+  <!-- S5: Module 3 — Build The Stack -->
+  <section class="stage" id="stage-5">
+    <div class="module-progress-track" style="max-width:600px;margin-bottom:1.2rem;">
+      <div class="module-progress-label"><span>MODULE 3 / 5 — SYSTEM ARCHITECTURE</span><span>60%</span></div>
+      <div class="module-progress-bar"><div class="module-progress-fill" style="width:40%;"></div></div>
+    </div>
+    <div class="glass-mission-card" style="max-width:700px;width:90%;margin-bottom:1rem;">
+      <p style="font-family:'Fira Code',monospace;font-size:0.78rem;color:var(--text-muted);margin-bottom:0.5rem;">MODULE 03 // BUILD THE STACK</p>
+      <p style="color:var(--text-sub);font-size:0.9rem;">The development pipeline has been corrupted. Restore the correct workflow order.</p>
+    </div>
+    <div class="stack-arrow" id="stack-arrow">
+      <div class="stack-item" data-step="0"><div class="mc-icon">🎨</div><div class="mc-label" style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;">Figma</div><div style="font-size:0.78rem;color:var(--text-muted);margin-left:auto;">UI Design</div></div>
+      <div style="color:var(--neon-purple);font-size:1rem;">↓</div>
+      <div class="stack-item" data-step="1"><div class="mc-icon">⚛️</div><div class="mc-label" style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;">React</div><div style="font-size:0.78rem;color:var(--text-muted);margin-left:auto;">Development</div></div>
+      <div style="color:var(--neon-purple);font-size:1rem;">↓</div>
+      <div class="stack-item" data-step="2"><div class="mc-icon">🔥</div><div class="mc-label" style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;">Firebase</div><div style="font-size:0.78rem;color:var(--text-muted);margin-left:auto;">Backend</div></div>
+      <div style="color:var(--neon-purple);font-size:1rem;">↓</div>
+      <div class="stack-item" data-step="3"><div class="mc-icon">🐙</div><div class="mc-label" style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;">GitHub</div><div style="font-size:0.78rem;color:var(--text-muted);margin-left:auto;">Version Control</div></div>
+      <div style="color:var(--neon-purple);font-size:1rem;">↓</div>
+      <div class="stack-item" data-step="4"><div class="mc-icon">🐳</div><div class="mc-label" style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;">Docker</div><div style="font-size:0.78rem;color:var(--text-muted);margin-left:auto;">Containerize</div></div>
+      <div style="color:var(--neon-purple);font-size:1rem;">↓</div>
+      <div class="stack-item" data-step="5"><div class="mc-icon">▲</div><div class="mc-label" style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;">Vercel</div><div style="font-size:0.78rem;color:var(--text-muted);margin-left:auto;">Deploy</div></div>
+    </div>
+    <div id="m3-reveal" style="display:none;margin-top:1rem;max-width:580px;width:90%;margin-left:auto;margin-right:auto;">
+      <div class="reveal-card visible">
+        <div class="reveal-card-body">Modern applications move through multiple stages — from designing interfaces to development, version control, containerization, and finally deployment to production.</div>
+      </div>
+      <button class="btn-mission-primary" id="m3-next" style="margin-top:1rem;">MODULE 4 →</button>
+    </div>
+    <div style="display:flex;gap:1rem;justify-content:center;margin-top:1rem;">
+      <button id="m3-animate-btn" style="background:rgba(0,243,255,0.15);border:1px solid rgba(0,243,255,0.4);color:var(--accent-cyan);padding:8px 20px;border-radius:8px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:0.82rem;">ANIMATE STACK</button>
+      <button id="m3-reveal-btn" style="background:rgba(168,85,247,0.2);border:1px solid var(--border-glass-bright);color:#fff;padding:8px 20px;border-radius:8px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:0.82rem;">REVEAL & EXPLAIN</button>
+    </div>
+  </section>
+
+  <!-- S6: Module 4 — Who Am I? -->
+  <section class="stage" id="stage-6">
+    <div class="module-progress-track" style="max-width:600px;margin-bottom:1.2rem;">
+      <div class="module-progress-label"><span>MODULE 4 / 5 — IDENTITY RECOVERY</span><span>80%</span></div>
+      <div class="module-progress-bar"><div class="module-progress-fill" style="width:60%;"></div></div>
+    </div>
+    <div class="glass-mission-card" style="max-width:580px;width:90%;text-align:left;">
+      <p style="font-family:'Fira Code',monospace;font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;">MODULE 04 // IDENTITY RECOVERY</p>
+      <div id="clues-box"></div>
+      <div style="font-size:1.8rem;color:var(--neon-purple);font-family:'Space Grotesk',sans-serif;font-weight:700;margin-top:1rem;opacity:0;transition:opacity 0.6s ease;" id="who-am-i-question">Who am I? 🖥️</div>
+    </div>
+    <div id="m4-reveal" style="display:none;margin-top:1.2rem;max-width:580px;width:90%;margin-left:auto;margin-right:auto;">
+      <div class="reveal-card visible">
+        <div class="reveal-card-title">🐧 Linux ✓</div>
+        <div class="reveal-card-body">Linux is an open-source operating system that powers most cloud servers, supercomputers, Android devices, and countless embedded systems around the world.</div>
+      </div>
+      <button class="btn-mission-primary" id="m4-next" style="margin-top:1rem;">MODULE 5 →</button>
+    </div>
+    <div style="display:flex;gap:1rem;justify-content:center;margin-top:1rem;">
+      <button id="m4-clue-btn" style="background:rgba(0,243,255,0.15);border:1px solid rgba(0,243,255,0.4);color:var(--accent-cyan);padding:8px 20px;border-radius:8px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:0.82rem;">NEXT CLUE</button>
+      <button id="m4-reveal-btn" style="background:rgba(168,85,247,0.2);border:1px solid var(--border-glass-bright);color:#fff;padding:8px 20px;border-radius:8px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:0.82rem;">REVEAL ANSWER</button>
+    </div>
+  </section>
+
+  <!-- S7: Module 5 — Cyber Defense -->
+  <section class="stage" id="stage-7">
+    <div class="module-progress-track" style="max-width:600px;margin-bottom:1.2rem;">
+      <div class="module-progress-label"><span>MODULE 5 / 5 — CYBER DEFENSE</span><span>100%</span></div>
+      <div class="module-progress-bar"><div class="module-progress-fill" style="width:80%;"></div></div>
+    </div>
+    <p style="color:var(--text-sub);font-size:0.9rem;margin-bottom:1.2rem;max-width:620px;">A phishing attempt was detected. Identify the authentic login page before credentials are stolen.</p>
+    <div class="phish-compare">
+      <!-- Real Page -->
+      <div class="phish-card real" id="real-card">
+        <div class="phish-card-label">SITE A</div>
+        <div class="phish-browser-bar">
+          <span class="lock-icon">🔒</span>
+          <span class="url-text">accounts.google.com</span>
+        </div>
+        <div class="phish-body">
+          <div style="font-family:'Product Sans',sans-serif;font-size:1.8rem;color:#4285f4;font-weight:700;letter-spacing:-1px;">Google</div>
+          <div style="font-size:0.9rem;color:var(--text-sub);font-weight:600;">Sign in</div>
+          <div class="phish-field">Email or phone</div>
+          <div class="phish-field">Password</div>
+          <div class="phish-btn">Next</div>
+        </div>
+      </div>
+      <!-- Fake Page -->
+      <div class="phish-card fake" id="fake-card">
+        <div class="phish-card-label">SITE B</div>
+        <div class="phish-browser-bar">
+          <span style="color:#F43F5E;">⚠</span>
+          <span class="url-text suspicious">g00gle-login.suspicious-site.net</span>
+        </div>
+        <div class="phish-body">
+          <div class="phish-logo-fake misaligned" style="color:#4285f4;">Gooogle</div>
+          <div style="font-size:0.85rem;color:var(--text-sub);">Signin to continue</div>
+          <div class="phish-field" style="border-color:rgba(244,63,94,0.3);">Email or phone number</div>
+          <div class="phish-field" style="border-color:rgba(244,63,94,0.3);">Password</div>
+          <div class="phish-btn" style="background:#1255b3;font-size:0.78rem;letter-spacing:0.02em;">Sign In Now</div>
+        </div>
+        <div class="warning-overlay" id="fake-warning">
+          <p>⚠ PHISHING DETECTED</p>
+        </div>
+      </div>
+    </div>
+    <div id="m5-reveal" style="display:none;margin-top:1.2rem;max-width:580px;width:90%;margin-left:auto;margin-right:auto;">
+      <div class="reveal-card visible">
+        <div class="reveal-card-title">Site A — Genuine ✓</div>
+        <div class="reveal-card-body">Phishing attacks imitate trusted websites to steal passwords and personal data. Always verify the URL, HTTPS security (🔒), and the visual authenticity of the page before entering credentials.</div>
+      </div>
+      <button class="btn-mission-primary" id="m5-next" style="margin-top:1rem;">GRAND FINALE →</button>
+    </div>
+    <button id="m5-reveal-btn" style="margin-top:1rem;background:rgba(168,85,247,0.2);border:1px solid var(--border-glass-bright);color:#fff;padding:8px 20px;border-radius:8px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:0.82rem;">REVEAL ANSWER</button>
+  </section>
+
+  <!-- S8: Grand Finale -->
+  <section class="stage" id="stage-8">
+    <div style="text-align:center;max-width:640px;">
+      <div class="module-progress-track" style="margin-bottom:1.5rem;">
+        <div class="module-progress-label"><span>SYSTEM STATUS</span><span>100%</span></div>
+        <div class="module-progress-bar"><div class="module-progress-fill" style="width:100%;"></div></div>
+      </div>
+      <div style="font-family:'Fira Code',monospace;font-size:0.8rem;color:#10B981;letter-spacing:0.15em;margin-bottom:0.5rem;">SYSTEM ONLINE</div>
+      <h1 class="mission-title-xl" style="background:linear-gradient(135deg,#fff,#10B981);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.5rem;">SYNAPSE RESTORED</h1>
+      <p style="font-size:1rem;color:var(--text-sub);margin-bottom:1rem;">Congratulations, Agents.</p>
+      <p style="color:var(--neon-purple);font-weight:700;font-size:1.1rem;margin-bottom:1rem;">The AI Core has been successfully recovered. Mission Complete.</p>
+      <div class="intro-logo-box float-element" style="margin:1.5rem auto;width:90px;height:90px;">
+        <img src="../assets/images/synapse_logo.jpg" class="intro-logo-img assembled" alt="Synapse" style="border-radius:18px;">
+      </div>
+      <p style="color:var(--accent-cyan);font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:0.1em;margin-bottom:1.5rem;">Learn. Build. Innovate. Together.</p>
+      <a href="../index.html"><button class="btn-mission-secondary">RETURN HOME</button></a>
+    </div>
+  </section>
+
+  <!-- Presenter -->
+  <button class="presenter-toggle-fab" id="presenter-fab">⚙</button>
+  <div class="presenter-panel" id="presenter-panel">
+    <h3>⚙ Presenter Panel</h3>
+    <button class="presenter-btn" id="pp-start-timer">▶ Start 15-min Timer</button>
+    <button class="presenter-btn" id="pp-stop-timer">⏸ Pause Timer</button>
+    <hr style="border-color:rgba(255,255,255,0.08);margin:0.8rem 0;">
+    <button class="presenter-btn" id="pp-prev">← Previous</button>
+    <button class="presenter-btn" id="pp-next-pp">Next Stage →</button>
+    <button class="presenter-btn danger" id="pp-restart">↺ Restart</button>
+  </div>
+
+  <script src="../assets/js/sounds.js"></script>
+  <script src="../assets/js/neural-canvas.js"></script>
+  <script src="../assets/js/missions/alpha-m3.js"></script>
+</body>
+</html>
