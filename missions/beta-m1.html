@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mission 04 — Wizard's Game Forge | The Synapse Society</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/animations.css">
+  <link rel="stylesheet" href="../assets/css/missions.css">
+  <style>
+    /* Magical colour overrides */
+    :root {
+      --magic-gold: #F59E0B;
+      --magic-violet: #7C3AED;
+      --magic-glow: rgba(245,158,11,0.35);
+    }
+    body { background: radial-gradient(ellipse at top, #1a0a2e 0%, #090909 60%); }
+
+    /* Floating magic particles */
+    .magic-particle {
+      position: fixed; border-radius: 50%; pointer-events: none; z-index: 3;
+      animation: magicFloat linear infinite;
+    }
+    @keyframes magicFloat {
+      0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 0.7; }
+      100% { transform: translateY(-10vh) scale(1.5) rotate(360deg); opacity: 0; }
+    }
+
+    /* Portal animation */
+    .portal-ring {
+      width: 180px; height: 180px; border-radius: 50%; margin: 0 auto;
+      border: 3px solid var(--magic-gold);
+      box-shadow: 0 0 40px var(--magic-gold), inset 0 0 40px rgba(124,58,237,0.5);
+      animation: portalSpin 6s linear infinite, portalGlow 3s ease-in-out infinite alternate;
+    }
+    @keyframes portalSpin { to { transform: rotate(360deg); } }
+    @keyframes portalGlow {
+      from { box-shadow: 0 0 30px var(--magic-gold), inset 0 0 30px rgba(124,58,237,0.4); }
+      to   { box-shadow: 0 0 70px var(--magic-gold), 0 0 120px rgba(124,58,237,0.3), inset 0 0 60px rgba(124,58,237,0.6); }
+    }
+    .portal-inner {
+      width: 100%; height: 100%; border-radius: 50%;
+      background: radial-gradient(circle, rgba(124,58,237,0.6) 0%, rgba(9,9,9,0.9) 70%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+    }
+
+    /* Requirement cards */
+    .req-card {
+      flex: 0 0 calc(33.333% - 1rem); min-width: 160px;
+      padding: 1.4rem 1rem; border-radius: 16px; text-align: center;
+      background: rgba(20,16,38,0.75); border: 1px solid rgba(245,158,11,0.25);
+      backdrop-filter: blur(16px); transition: all 0.35s ease; cursor: default;
+      animation: floatSlow 5s ease-in-out infinite;
+    }
+    .req-card:nth-child(2) { animation-delay: 0.5s; }
+    .req-card:nth-child(3) { animation-delay: 1s; }
+    .req-card:nth-child(4) { animation-delay: 1.5s; }
+    .req-card:nth-child(5) { animation-delay: 2s; }
+    .req-card:nth-child(6) { animation-delay: 2.5s; }
+    .req-card:hover { border-color: var(--magic-gold); box-shadow: 0 0 25px var(--magic-glow); transform: translateY(-6px) scale(1.03); }
+    .req-card-icon  { font-size: 2.2rem; margin-bottom: 0.5rem; }
+    .req-card-label { font-family:'Space Grotesk',sans-serif; font-weight: 700; color: #fff; font-size: 0.9rem; }
+
+    /* Inspiration carousel */
+    .carousel-track   { display: flex; gap: 1.5rem; overflow-x: auto; padding: 1rem 0.5rem; scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: rgba(245,158,11,0.4) transparent; max-width: 900px; width: 90%; }
+    .carousel-card    { flex: 0 0 220px; border-radius: 18px; overflow: hidden; border: 1px solid rgba(245,158,11,0.3); cursor: pointer; transition: all 0.3s ease; background: rgba(20,16,38,0.8); }
+    .carousel-card:hover { transform: scale(1.05); border-color: var(--magic-gold); box-shadow: 0 10px 30px var(--magic-glow); }
+    .carousel-thumb   { height: 130px; background: linear-gradient(135deg, var(--magic-violet), #090909); display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+    .carousel-info    { padding: 0.9rem; }
+    .carousel-title   { font-family:'Space Grotesk',sans-serif; font-weight: 700; color: #fff; font-size: 0.9rem; margin-bottom: 0.3rem; }
+    .carousel-sub     { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
+
+    /* Prompt code block */
+    .prompt-block {
+      background: rgba(10,8,20,0.95); border: 1px solid rgba(245,158,11,0.3);
+      border-radius: 16px; padding: 1.5rem; text-align: left; position: relative;
+      max-width: 680px; width: 90%; font-family:'Fira Code',monospace; font-size: 0.85rem;
+      color: var(--text-sub); line-height: 1.8;
+    }
+    .prompt-block::before { content:'GEMINI CANVAS PROMPT'; position:absolute; top:-10px; left:16px;
+      background: var(--magic-gold); color:#000; font-family:'Space Grotesk',sans-serif;
+      font-weight:700; font-size:0.65rem; letter-spacing:0.1em; padding:2px 10px; border-radius:10px; }
+    .copy-btn { position:absolute; top:0.8rem; right:0.8rem; padding:6px 14px;
+      background:rgba(245,158,11,0.2); border:1px solid rgba(245,158,11,0.5); border-radius:8px;
+      color:var(--magic-gold); font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:0.75rem;
+      cursor:pointer; transition:all 0.25s ease; }
+    .copy-btn:hover { background:var(--magic-gold); color:#000; }
+
+    /* Judging cards */
+    .judge-cards { display:flex; flex-wrap:wrap; gap:1.2rem; justify-content:center; max-width:760px; }
+    .judge-card  { flex:0 0 calc(20% - 1rem); min-width:130px; padding:1.2rem 0.8rem; border-radius:14px;
+      text-align:center; background:rgba(20,16,38,0.7); border:1px solid rgba(245,158,11,0.2);
+      backdrop-filter:blur(16px); transition:all 0.3s ease; }
+    .judge-card:hover { border-color:var(--magic-gold); box-shadow:0 0 20px var(--magic-glow); transform:translateY(-4px); }
+
+    /* Big gold timer */
+    .big-timer-fill.gold-mode { stroke: var(--magic-gold) !important; filter: drop-shadow(0 0 12px var(--magic-gold)) !important; }
+  </style>
+</head>
+<body>
+  <canvas id="neural-canvas"></canvas>
+  <div class="ambient-glow top-left" style="background:radial-gradient(circle,rgba(124,58,237,0.3) 0%,transparent 70%);"></div>
+  <div class="ambient-glow bottom-right" style="background:radial-gradient(circle,rgba(245,158,11,0.2) 0%,transparent 70%);"></div>
+  <div class="grid-overlay"></div>
+  <div class="glitch-fx" id="glitch-fx"></div>
+  <div class="energy-pulse-overlay" id="energy-pulse"></div>
+
+  <header class="mission-top-bar">
+    <a href="../index.html" class="mission-top-logo">
+      <img src="../assets/images/synapse_logo.jpg" alt="Synapse">
+      <span>THE SYNAPSE SOCIETY</span>
+    </a>
+    <div class="mission-top-center" id="stage-indicator">MISSION 04 // WIZARD'S GAME FORGE</div>
+    <div class="mission-top-right">
+      <a href="../index.html" class="mission-home-btn">← Home</a>
+    </div>
+  </header>
+
+  <!-- STAGE 1: Magical Opening -->
+  <section class="stage active" id="stage-1">
+    <div style="text-align:center;">
+      <div class="portal-ring float-element" style="margin-bottom:2rem;">
+        <div class="portal-inner">✨</div>
+      </div>
+      <p class="mission-label" style="color:var(--magic-gold);letter-spacing:0.2em;">TEAM BETA // PROTOCOL ACTIVE</p>
+      <h1 class="mission-title-xl" style="background:linear-gradient(135deg,#fff 20%,var(--magic-gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">WIZARD'S GAME FORGE</h1>
+      <p class="mission-subtitle">Build. Imagine. Create.</p>
+      <button class="btn-mission-primary" id="s1-next" style="background:linear-gradient(135deg,var(--magic-violet),var(--magic-gold));box-shadow:0 0 30px var(--magic-glow);">
+        ENTER THE FORGE ✨
+      </button>
+    </div>
+  </section>
+
+  <!-- STAGE 2: Mission Story -->
+  <section class="stage" id="stage-2">
+    <div class="glass-mission-card" style="max-width:680px;width:90%;text-align:left;border-color:rgba(245,158,11,0.3);">
+      <p style="font-size:1.2rem;margin-bottom:0.6rem;">📜</p>
+      <p style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--magic-gold);font-size:1rem;margin-bottom:1rem;letter-spacing:0.05em;">MISSION BRIEF</p>
+      <div class="typewriter-box" id="story-text"></div>
+    </div>
+    <button class="btn-mission-secondary" id="s2-next" style="margin-top:1.5rem;display:none;border-color:rgba(245,158,11,0.4);color:var(--magic-gold);">CONTINUE →</button>
+  </section>
+
+  <!-- STAGE 3: Objective + Requirements -->
+  <section class="stage" id="stage-3">
+    <p class="mission-label" style="color:var(--magic-gold);">🪄 YOUR OBJECTIVE</p>
+    <h2 class="mission-title-lg" style="background:linear-gradient(135deg,#fff,var(--magic-gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.8rem;">Create Your Wizard Game</h2>
+    <p style="color:var(--text-sub);font-size:1rem;max-width:580px;margin-bottom:2rem;">Build the most creative, beautiful and playable wizard-themed browser game using Gemini Canvas. There are no limits to your imagination.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;max-width:760px;">
+      <div class="req-card"><div class="req-card-icon">🧙</div><div class="req-card-label">Magical Theme</div></div>
+      <div class="req-card"><div class="req-card-icon">🎮</div><div class="req-card-label">Playable Character</div></div>
+      <div class="req-card"><div class="req-card-icon">🏆</div><div class="req-card-label">Clear Goal</div></div>
+      <div class="req-card"><div class="req-card-icon">⭐</div><div class="req-card-label">Score System</div></div>
+      <div class="req-card"><div class="req-card-icon">✨</div><div class="req-card-label">Smooth Animations</div></div>
+      <div class="req-card"><div class="req-card-icon">🎵</div><div class="req-card-label">Bonus Sound FX</div></div>
+    </div>
+    <button class="btn-mission-secondary" id="s3-next" style="margin-top:2rem;border-color:rgba(245,158,11,0.4);color:var(--magic-gold);">SEE INSPIRATION →</button>
+  </section>
+
+  <!-- STAGE 4: Inspiration Carousel -->
+  <section class="stage" id="stage-4">
+    <p class="mission-label" style="color:var(--magic-gold);">✨ INSPIRATION GALLERY</p>
+    <h2 class="mission-title-lg" style="margin-bottom:1.5rem;">What Will You Build?</h2>
+    <div class="carousel-track">
+      <div class="carousel-card"><div class="carousel-thumb">🧹</div><div class="carousel-info"><div class="carousel-title">Catch the Golden Snitch</div><div class="carousel-sub">Flying broom · Golden Snitch · Quidditch stadium</div></div></div>
+      <div class="carousel-card"><div class="carousel-thumb">⚔️</div><div class="carousel-info"><div class="carousel-title">Wizard Duel</div><div class="carousel-sub">Magical spells · Dark wizard · Lightning effects</div></div></div>
+      <div class="carousel-card"><div class="carousel-thumb">🏰</div><div class="carousel-info"><div class="carousel-title">Escape the Castle</div><div class="carousel-sub">Moving staircases · Magic doors · Secret rooms</div></div></div>
+      <div class="carousel-card"><div class="carousel-thumb">🧪</div><div class="carousel-info"><div class="carousel-title">Potion Master</div><div class="carousel-sub">Cauldrons · Potion ingredients · Magic lab</div></div></div>
+      <div class="carousel-card"><div class="carousel-thumb">🌲</div><div class="carousel-info"><div class="carousel-title">Forbidden Forest</div><div class="carousel-sub">Dark trees · Mystical creatures · Hidden treasure</div></div></div>
+      <div class="carousel-card"><div class="carousel-thumb">🔮</div><div class="carousel-info"><div class="carousel-title">Spell Defender</div><div class="carousel-sub">Protect the castle using magical spells</div></div></div>
+    </div>
+    <button class="btn-mission-secondary" id="s4-next" style="margin-top:1.5rem;border-color:rgba(245,158,11,0.4);color:var(--magic-gold);">VIEW PROMPT →</button>
+  </section>
+
+  <!-- STAGE 5: Gemini Canvas Prompt -->
+  <section class="stage" id="stage-5">
+    <p class="mission-label" style="color:var(--magic-gold);">🤖 GEMINI CANVAS PROMPT</p>
+    <h2 class="mission-title-lg" style="margin-bottom:1.5rem;">Start With This</h2>
+    <div class="prompt-block" id="prompt-block">
+      <button class="copy-btn" id="copy-btn">COPY</button>
+      Create a playable wizard-themed browser game using HTML, CSS and JavaScript.<br><br>
+      The game should include:<br>
+      • Beautiful magical environment<br>
+      • Smooth character movement<br>
+      • Attractive UI<br>
+      • Win/Lose screen<br>
+      • Score system<br>
+      • Timer<br>
+      • Smooth animations<br>
+      • Fantasy-inspired visual effects<br><br>
+      Then improve this prompt with your own creative ideas.
+    </div>
+    <p style="color:var(--text-muted);font-size:0.85rem;margin-top:1rem;font-style:italic;">Copy this prompt into Gemini Canvas, then make it your own.</p>
+    <button class="btn-mission-secondary" id="s5-next" style="margin-top:1.2rem;border-color:rgba(245,158,11,0.4);color:var(--magic-gold);">START FORGE ⚒ →</button>
+  </section>
+
+  <!-- STAGE 6: 5-Minute Timer -->
+  <section class="stage" id="stage-6">
+    <p class="mission-label" style="color:var(--magic-gold);">⚡ FORGE IN PROGRESS</p>
+    <h2 class="mission-title-lg" style="background:linear-gradient(135deg,#fff,var(--magic-gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.5rem;">5-Minute Challenge</h2>
+    <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1.5rem;">Build your wizard game using Gemini Canvas. Make it magical. Make it yours.</p>
+
+    <div class="mission-big-timer">
+      <svg viewBox="0 0 260 260">
+        <circle class="big-timer-track" cx="130" cy="130" r="114"/>
+        <circle id="big-timer-fill" class="big-timer-fill gold-mode" cx="130" cy="130" r="114"
+          style="stroke-dasharray:716.3;stroke-dashoffset:0;stroke:var(--magic-gold);filter:drop-shadow(0 0 12px var(--magic-gold));"/>
+      </svg>
+      <div class="big-timer-center">
+        <div id="big-timer-digits" class="big-timer-digits">05:00</div>
+        <div class="timer-label" style="color:var(--magic-gold);">REMAINING</div>
+      </div>
+      <div class="big-timer-orbit" style="border-color:rgba(245,158,11,0.3);">
+        <div class="orbit-particle" style="background:var(--magic-gold);box-shadow:0 0 8px var(--magic-gold);"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:1rem;margin-top:1.5rem;">
+      <button class="btn-mission-primary" id="forge-start-btn" style="background:linear-gradient(135deg,var(--magic-violet),var(--magic-gold));">▶ START FORGE</button>
+      <button class="btn-mission-secondary" id="forge-pause-btn" style="display:none;">⏸ PAUSE</button>
+    </div>
+    <button class="btn-mission-secondary" id="s6-next" style="margin-top:1rem;border-color:rgba(245,158,11,0.4);color:var(--magic-gold);">TIME'S UP →</button>
+  </section>
+
+  <!-- STAGE 7: Judging Criteria -->
+  <section class="stage" id="stage-7">
+    <p class="mission-label" style="color:var(--magic-gold);">⭐ JUDGING CRITERIA</p>
+    <h2 class="mission-title-lg" style="margin-bottom:1.5rem;">The Great Wizarding Showcase</h2>
+    <p style="color:var(--text-sub);font-size:1rem;margin-bottom:2rem;">Let the magic begin.</p>
+    <div class="judge-cards">
+      <div class="judge-card"><div style="font-size:2rem;">🎨</div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:0.85rem;margin-top:0.5rem;">Creativity</div></div>
+      <div class="judge-card"><div style="font-size:2rem;">🎮</div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:0.85rem;margin-top:0.5rem;">Gameplay</div></div>
+      <div class="judge-card"><div style="font-size:2rem;">✨</div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:0.85rem;margin-top:0.5rem;">Visual Design</div></div>
+      <div class="judge-card"><div style="font-size:2rem;">🤖</div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:0.85rem;margin-top:0.5rem;">AI Use</div></div>
+      <div class="judge-card"><div style="font-size:2rem;">⭐</div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:0.85rem;margin-top:0.5rem;">Extra Features</div></div>
+    </div>
+    <p style="color:var(--magic-gold);font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:0.08em;margin-top:2rem;font-size:1rem;">Every great creation begins with imagination.</p>
+    <a href="../index.html"><button class="btn-mission-secondary" style="margin-top:1.5rem;border-color:rgba(245,158,11,0.4);color:var(--magic-gold);">RETURN HOME</button></a>
+  </section>
+
+  <!-- Presenter -->
+  <button class="presenter-toggle-fab" id="presenter-fab" style="background:rgba(245,158,11,0.3);">⚙</button>
+  <div class="presenter-panel" id="presenter-panel">
+    <h3 style="color:var(--magic-gold);">⚙ Presenter Panel</h3>
+    <button class="presenter-btn" id="pp-prev">← Previous</button>
+    <button class="presenter-btn" id="pp-next">Next Stage →</button>
+    <button class="presenter-btn" id="pp-start-timer">▶ Start Timer</button>
+    <button class="presenter-btn danger" id="pp-restart">↺ Restart</button>
+  </div>
+
+  <script src="../assets/js/sounds.js"></script>
+  <script src="../assets/js/neural-canvas.js"></script>
+  <script src="../assets/js/missions/beta-m1.js"></script>
+</body>
+</html>

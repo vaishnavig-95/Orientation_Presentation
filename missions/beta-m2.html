@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mission 05 — AI Vision Challenge | The Synapse Society</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/animations.css">
+  <link rel="stylesheet" href="../assets/css/missions.css">
+  <style>
+    /* HUD scanning grid background */
+    .hud-grid-bg {
+      position: fixed; inset: 0; z-index: 2; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(0,243,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,243,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .scan-wave {
+      position: fixed; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, rgba(0,243,255,0.6), transparent);
+      box-shadow: 0 0 15px rgba(0,243,255,0.4);
+      z-index: 4; pointer-events: none;
+      animation: scanWave 4s linear infinite;
+    }
+    @keyframes scanWave { 0% { top:0; opacity:1; } 95% { top:100vh; opacity:0.5; } 100% { top:100vh; opacity:0; } }
+
+    /* AI Feedback tags */
+    .ai-feedback-tag {
+      display: inline-block; padding: 6px 16px; border-radius: 20px;
+      background: rgba(0,243,255,0.12); border: 1px solid rgba(0,243,255,0.3);
+      font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--accent-cyan);
+      letter-spacing: 0.08em; margin: 0.5rem; animation: tagPop 0.4s ease both;
+    }
+    @keyframes tagPop { from { transform:scale(0.7); opacity:0; } to { transform:scale(1); opacity:1; } }
+
+    /* Image placeholder cards */
+    .vision-img-placeholder {
+      width: 100%; aspect-ratio: 1; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 4rem; background: rgba(0,0,0,0.6);
+      border: 1px solid rgba(0,243,255,0.2);
+      transform-origin: center;
+    }
+
+    /* Observation bar */
+    .obs-bar-wrap { max-width: 480px; width: 90%; }
+    .obs-bar { height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
+    .obs-fill { height: 100%; background: linear-gradient(90deg, var(--neon-purple), var(--accent-cyan)); border-radius: 4px; transition: width 0.8s ease; box-shadow: 0 0 10px var(--accent-cyan); }
+  </style>
+</head>
+<body>
+  <canvas id="neural-canvas"></canvas>
+  <div class="hud-grid-bg"></div>
+  <div class="scan-wave"></div>
+  <div class="ambient-glow top-left" style="background:radial-gradient(circle,rgba(0,243,255,0.2) 0%,transparent 70%);"></div>
+  <div class="ambient-glow bottom-right"></div>
+  <div class="glitch-fx" id="glitch-fx"></div>
+  <div class="energy-pulse-overlay" id="energy-pulse"></div>
+
+  <header class="mission-top-bar">
+    <a href="../index.html" class="mission-top-logo">
+      <img src="../assets/images/synapse_logo.jpg" alt="Synapse">
+      <span>THE SYNAPSE SOCIETY</span>
+    </a>
+    <div class="mission-top-center" id="q-progress-label">AI VISION CHALLENGE // IMAGE 0 / 15</div>
+    <div class="mission-top-right">
+      <a href="../index.html" class="mission-home-btn">← Home</a>
+    </div>
+  </header>
+
+  <!-- STAGE 1: Opening -->
+  <section class="stage active" id="stage-1">
+    <p class="mission-label" style="color:var(--accent-cyan);letter-spacing:0.2em;">TEAM BETA // MISSION 05</p>
+    <h1 class="mission-title-xl" style="background:linear-gradient(135deg,#fff,var(--accent-cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">AI VISION CHALLENGE</h1>
+    <p class="mission-subtitle" style="color:var(--accent-cyan);">Computer Vision Simulation</p>
+    <p class="mission-subtitle" style="color:var(--text-muted);font-style:normal;font-size:0.95rem;max-width:500px;">Identify hidden technology before the AI completes its scan.</p>
+    <button class="btn-mission-primary" id="s1-next" style="background:linear-gradient(135deg,var(--primary-purple),var(--accent-cyan));box-shadow:0 0 30px rgba(0,243,255,0.4);">
+      INITIATE SCAN →
+    </button>
+  </section>
+
+  <!-- STAGE 2: Story + Objective -->
+  <section class="stage" id="stage-2">
+    <div class="glass-mission-card" style="max-width:640px;width:90%;text-align:left;border-color:rgba(0,243,255,0.3);margin-bottom:1.5rem;">
+      <p class="mission-label" style="color:var(--accent-cyan);">MISSION BRIEF</p>
+      <p style="color:var(--text-sub);font-size:1rem;line-height:1.8;">
+        Artificial Intelligence can recognize objects from only a handful of pixels.<br>
+        Can humans do the same?<br><br>
+        Your mission is to identify hidden technology before the AI completes its scan.<br>
+        <span style="color:var(--accent-cyan);font-weight:700;">Every pixel matters.</span>
+      </p>
+    </div>
+    <ul class="rules-list" id="rules-list">
+      <li class="rule-item" style="border-color:rgba(0,243,255,0.2);"><span class="rule-icon">👀</span>Observe every detail carefully</li>
+      <li class="rule-item" style="border-color:rgba(0,243,255,0.2);"><span class="rule-icon">✋</span>Raise your hand — do not shout</li>
+      <li class="rule-item" style="border-color:rgba(0,243,255,0.2);"><span class="rule-icon">⏱</span>One guess per image</li>
+      <li class="rule-item" style="border-color:rgba(0,243,255,0.2);"><span class="rule-icon">🏆</span>Fastest correct answer wins the round</li>
+      <li class="rule-item" style="border-color:rgba(0,243,255,0.2);"><span class="rule-icon">💡</span>Stay focused — every detail matters</li>
+    </ul>
+    <button class="btn-mission-primary" id="s2-next" style="margin-top:1.5rem;background:linear-gradient(135deg,var(--primary-purple),var(--accent-cyan));box-shadow:0 0 25px rgba(0,243,255,0.3);">BEGIN SCANNING →</button>
+  </section>
+
+  <!-- STAGE 3: Challenge Engine -->
+  <section class="stage" id="stage-3">
+
+    <!-- Scanning phase -->
+    <div id="scan-phase">
+      <p class="mission-label" style="color:var(--accent-cyan);" id="scan-label">SCANNING OBJECT...</p>
+      <div class="signal-loader-bar" style="background:rgba(0,243,255,0.08);">
+        <div class="signal-loader-fill" id="scan-fill" style="background:linear-gradient(90deg,var(--neon-purple),var(--accent-cyan));"></div>
+      </div>
+      <p style="font-family:'Fira Code',monospace;font-size:0.78rem;color:var(--text-muted);margin-top:0.5rem;" id="scan-status">Initializing visual analysis...</p>
+      <div id="scan-pct" style="font-family:'Fira Code',monospace;font-size:2rem;font-weight:700;color:var(--accent-cyan);margin-top:0.5rem;text-shadow:0 0 20px var(--accent-cyan);">0%</div>
+    </div>
+
+    <!-- Image phase -->
+    <div id="image-phase" style="display:none;text-align:center;width:100%;">
+      <div class="question-counter" style="color:var(--accent-cyan);" id="challenge-counter">CHALLENGE 01 / 15</div>
+      <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:1rem;" id="challenge-question">Can you identify this technology?</p>
+
+      <div class="scanner-frame" style="margin:0 auto;">
+        <div class="scanner-img-wrap" id="scanner-img-wrap" style="border-color:var(--accent-cyan);box-shadow:0 0 30px rgba(0,243,255,0.3);">
+          <div class="vision-img-placeholder" id="vision-img-placeholder">?</div>
+          <img id="vision-img" src="" alt="Challenge" style="display:none;transform:scale(10);transition:transform 2.5s cubic-bezier(0.25,0.46,0.45,0.94);">
+          <div class="scanner-scan-line"></div>
+          <div class="scanner-corner sc-tl"></div>
+          <div class="scanner-corner sc-tr"></div>
+          <div class="scanner-corner sc-bl"></div>
+          <div class="scanner-corner sc-br"></div>
+          <div class="hud-label hud-tl" id="hud-tl">OBJECT</div>
+          <div class="hud-label hud-tr" id="hud-tr">UNKNOWN</div>
+          <div class="hud-label hud-bl" id="hud-bl">CLASSIFICATION</div>
+          <div class="hud-label hud-br" id="hud-br">AI ANALYSIS</div>
+        </div>
+      </div>
+
+      <div id="ai-feedback-tags" style="margin-top:1rem;"></div>
+      <button class="btn-mission-primary" id="reveal-btn" style="margin-top:1rem;background:linear-gradient(135deg,var(--primary-purple),var(--accent-cyan));box-shadow:0 0 25px rgba(0,243,255,0.3);">REVEAL OBJECT</button>
+    </div>
+
+    <!-- Answer phase -->
+    <div id="answer-phase" style="display:none;text-align:center;width:100%;">
+      <p class="mission-label" style="color:var(--accent-cyan);">✓ OBJECT IDENTIFIED</p>
+      <div class="reveal-card visible" style="max-width:560px;margin:0 auto 1rem;border-color:rgba(0,243,255,0.4);">
+        <div class="reveal-card-title" style="color:var(--accent-cyan);" id="answer-name"></div>
+        <div class="reveal-card-body" id="answer-desc"></div>
+      </div>
+      <div class="obs-bar-wrap" style="margin:0 auto 1rem;">
+        <div style="display:flex;justify-content:space-between;font-family:'Fira Code',monospace;font-size:0.72rem;color:var(--text-muted);margin-bottom:4px;">
+          <span>OBSERVATION LEVEL</span><span id="obs-pct-label">0%</span>
+        </div>
+        <div class="obs-bar"><div class="obs-fill" id="obs-fill" style="width:0%;"></div></div>
+      </div>
+      <button class="btn-mission-primary" id="next-challenge-btn" style="background:linear-gradient(135deg,var(--primary-purple),var(--accent-cyan));box-shadow:0 0 25px rgba(0,243,255,0.3);">NEXT OBJECT →</button>
+    </div>
+  </section>
+
+  <!-- STAGE 4: End Screen -->
+  <section class="stage" id="stage-4">
+    <div style="text-align:center;max-width:600px;">
+      <div class="intro-logo-box float-element" style="margin:0 auto 2rem;width:90px;height:90px;">
+        <img src="../assets/images/synapse_logo.jpg" class="intro-logo-img assembled" alt="Synapse" style="border-radius:18px;">
+      </div>
+      <p class="mission-label" style="color:var(--accent-cyan);">VISION TRAINING COMPLETE</p>
+      <h1 class="mission-title-xl" style="background:linear-gradient(135deg,#fff,var(--accent-cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.5rem;">Mission Complete</h1>
+      <p class="mission-subtitle" style="color:var(--text-sub);">Your observation skills have been successfully enhanced.<br>You now see technology the way AI does.</p>
+      <div class="obs-bar-wrap" style="margin:1.5rem auto;">
+        <div class="obs-bar"><div class="obs-fill" style="width:100%;"></div></div>
+      </div>
+      <p class="mission-quote" style="margin:1.5rem auto;max-width:480px;">Great engineers don't just build technology. They learn to observe it differently.</p>
+      <a href="../index.html"><button class="btn-mission-secondary" style="margin-top:1.5rem;border-color:rgba(0,243,255,0.4);color:var(--accent-cyan);">RETURN HOME</button></a>
+    </div>
+  </section>
+
+  <!-- Presenter -->
+  <button class="presenter-toggle-fab" id="presenter-fab" style="background:rgba(0,243,255,0.2);">⚙</button>
+  <div class="presenter-panel" id="presenter-panel">
+    <h3 style="color:var(--accent-cyan);">⚙ Presenter Panel</h3>
+    <label>Jump to Challenge</label>
+    <select id="pp-jump-sel"></select>
+    <button class="presenter-btn" id="pp-jump-btn">Jump</button>
+    <hr style="border-color:rgba(255,255,255,0.08);margin:0.8rem 0;">
+    <button class="presenter-btn" id="pp-reveal-pp">Reveal Object</button>
+    <button class="presenter-btn" id="pp-next-c">Next Challenge →</button>
+    <button class="presenter-btn danger" id="pp-restart">↺ Restart</button>
+  </div>
+
+  <script src="../assets/js/sounds.js"></script>
+  <script src="../assets/js/neural-canvas.js"></script>
+  <script src="../assets/js/missions/beta-m2.js"></script>
+</body>
+</html>

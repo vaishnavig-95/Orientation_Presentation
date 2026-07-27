@@ -13,29 +13,29 @@ const PROTOCOL_DATA = {
       {
         id: 'alpha-m1',
         badge: 'MISSION 01',
-        title: 'Placeholder Mission',
-        desc: 'Mission briefing and challenge details will be added here. Stay tuned for activation.',
-        icon: '🎯',
-        status: 'locked',    // 'locked' | 'unlocked' | 'complete'
-        component: null      // Future: component module path
+        title: 'Prompt Engineering Challenge',
+        desc: 'Observe an AI-generated image for 5 seconds, then write the perfect prompt to recreate it in Gemini.',
+        icon: '✍️',
+        status: 'unlocked',
+        url: 'missions/alpha-m1.html'
       },
       {
         id: 'alpha-m2',
         badge: 'MISSION 02',
-        title: 'Placeholder Mission',
-        desc: 'Mission briefing and challenge details will be added here. Stay tuned for activation.',
-        icon: '🧩',
-        status: 'locked',
-        component: null
+        title: 'AI Emoji Decoder',
+        desc: 'Decode 15 emoji transmissions from the Synapse AI. The language module is corrupted — only emojis remain.',
+        icon: '🤖',
+        status: 'unlocked',
+        url: 'missions/alpha-m2.html'
       },
       {
         id: 'alpha-m3',
         badge: 'MISSION 03',
-        title: 'Placeholder Mission',
-        desc: 'Mission briefing and challenge details will be added here. Stay tuned for activation.',
-        icon: '🚀',
-        status: 'locked',
-        component: null
+        title: 'Operation Synapse Restore',
+        desc: 'Restore 5 encrypted system modules in 15 minutes to bring the Synapse AI Core back online.',
+        icon: '🧠',
+        status: 'unlocked',
+        url: 'missions/alpha-m3.html'
       }
     ]
   },
@@ -46,30 +46,30 @@ const PROTOCOL_DATA = {
     missions: [
       {
         id: 'beta-m1',
-        badge: 'MISSION 01',
-        title: 'Placeholder Mission',
-        desc: 'Mission briefing and challenge details will be added here. Stay tuned for activation.',
+        badge: 'MISSION 04',
+        title: "Wizard's Game Forge",
+        desc: 'Use Gemini Canvas to build a magical wizard-themed browser game in just 5 minutes.',
         icon: '✨',
-        status: 'locked',
-        component: null
+        status: 'unlocked',
+        url: 'missions/beta-m1.html'
       },
       {
         id: 'beta-m2',
-        badge: 'MISSION 02',
-        title: 'Placeholder Mission',
-        desc: 'Mission briefing and challenge details will be added here. Stay tuned for activation.',
-        icon: '🎨',
-        status: 'locked',
-        component: null
+        badge: 'MISSION 05',
+        title: 'AI Vision Challenge',
+        desc: 'Identify hidden technology from heavily zoomed images — see the world through the eyes of Computer Vision.',
+        icon: '👁️',
+        status: 'unlocked',
+        url: 'missions/beta-m2.html'
       },
       {
         id: 'beta-m3',
-        badge: 'MISSION 03',
-        title: 'Placeholder Mission',
-        desc: 'Mission briefing and challenge details will be added here. Stay tuned for activation.',
-        icon: '💡',
-        status: 'locked',
-        component: null
+        badge: 'MISSION 06',
+        title: 'Prompt Relay',
+        desc: 'Whisper a prompt through 10 agents. Watch how AI output changes with every word lost along the chain.',
+        icon: '📡',
+        status: 'unlocked',
+        url: 'missions/beta-m3.html'
       }
     ]
   }
@@ -391,8 +391,12 @@ class ProtocolScreenBuilder {
       const btn = card.querySelector('.btn-launch-mission');
       if (btn && !btn.disabled) {
         btn.addEventListener('click', () => {
-          window.soundSystem && window.soundSystem.playClick();
-          this.modal.open(mission);
+          window.soundSystem && window.soundSystem.playLaunch();
+          if (mission.url) {
+            window.location.href = mission.url;
+          } else {
+            this.modal.open(mission);
+          }
         });
       }
 
